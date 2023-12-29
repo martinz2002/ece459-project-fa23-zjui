@@ -1,7 +1,23 @@
-\documentclass[../g5_final_report.tex]{subfiles}
+\documentclass[../ECE459FinalProjectReport.tex]{subfiles}
 
 \begin{document}
 \chapter{Introduction}
-\cite{haykinIntroductionAnalogDigital2007}
+This task involves building an Amplitude Modulation (AM) system using Python (or another programming language) and performing a series of simulations and analyses. 
 
+The specific steps include:
+
+\begin{enumerate}
+    \item Simulating Envelope Modulation with a Sinusoidal Wave and a Modulation Index of 0.3: First, we need to create a sinusoidal wave to act as the message signal and use this signal to modulate a carrier signal. The modulation index of 0.3 refers to the extent to which the message signal modulates the carrier signal. The goal here is to generate an AM signal whose envelope reflects the shape of the message signal.
+    \item Including AWGN Noise: Additive White Gaussian Noise (AWGN) is introduced into the modulated signal to simulate noise interference common in real communication environments. This makes the signal more representative of actual communication signals and tests the robustness of signal detection.
+    \item Performing Envelope Detection: Envelope detection is the process of recovering the original message signal from the modulated carrier signal. In this step, we will process the noisy AM signal to extract its envelope, representing the original message signal.
+\end{enumerate}
+
+The specific tasks include:
+
+\begin{enumerate}
+    \item Plotting the Envelope Modulated Signal: Show the waveform of the signal after envelope modulation in the time domain.
+    \item Plotting Its Spectrum: Create a spectrum plot of the modulated signal to display its frequency domain distribution.
+    \item Plotting the Envelope-Detected Signal Before Low-Pass Filtering: Display the waveform of the signal obtained through envelope detection before applying low-pass filtering to remove noise.
+    \item  Comparing Post-Detection Signal-to-Noise Ratio (SNR) to Theoretical Values: Calculate the post-detection SNR for both low and high pre-detection SNR scenarios and compare these values to theoretical predictions. This comparison helps understand the performance of the signal detection algorithm under different noise levels.
+\end{enumerate}
 \end{document}
