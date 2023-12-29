@@ -1,0 +1,84 @@
+\documentclass{ece459}
+\usepackage{subfiles}
+\usepackage{newpxtext, newpxmath}
+
+%%% Report information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\logo{LOGO2.png}
+\coursecode{ECE 459}
+\coursename{Communications Systems}
+\reporttitle{Performance Analysis of Amplitude and Frequency
+Modulation in Noise}
+\reporttype{Final Project}
+\instructor{Prof. \name{Said}{Mikki} and Prof. \name{Juan}{Alvarez}}
+\reportdate{January 11, 2024}
+%%% AUTHOR/TEAM INFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\authornames{
+    \large\underline{\textbf{Group 5}}\\[1em]
+    \renewcommand\arraystretch{2}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Name} & \textbf{Grade} \\\hline
+        \name{Yiqin}{Li} & \\\hline
+        \name{Peidong}{Yang} & \\\hline
+        \name{Zhuohao}{Xu} & \\\hline
+        \name{Rongjian}{Chen} & \\\hline
+        \name{Tiantian}{Zhong} & \\\hline
+        
+    \end{tabular}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% BIBLIOGRAPHY DATABASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addbibresource{references.bib} % The bib database
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\makecoverpage
+\frontmatter
+%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter*{Abstract}\thispagestyle{abstract}
+
+
+\paragraph{Keywords}
+% Put keywords below
+Keyword 1, keyword 2, keyword 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% TOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents\thispagestyle{toc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mainmatter
+%%% Body %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subfile{scripts/introduction.tex}
+\subfile{scripts/methodology.tex}
+\subfile{scripts/results.tex}
+\subfile{scripts/conclusion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% SOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subfile{scripts/statementcontribution.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\titleformat{\chapter}
+{\fontsize{16pt}{\baselineskip}\selectfont\bfseries}
+{Appendix \thechapter}{1em}{}
+\titlespacing{\chapter}{0pt}{0pt}{\baselineskip}
+\begin{appendices}
+    %%% Appendices %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \subfile{scripts/appendices/python_code.tex}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{appendices}
+\titleformat{\chapter}
+{\fontsize{16pt}{\baselineskip}\selectfont\bfseries}
+{\thechapter}{1em}{}
+\titlespacing{\chapter}{0pt}{0pt}{\baselineskip}
+\clearpage
+\backmatter
+\clearpage
+\renewcommand*{\UrlFont}{\rmfamily}
+\printbibliography[title={References},heading=bibintoc]
+\thispagestyle{references}
+\clearpage
+\end{document}
