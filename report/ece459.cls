@@ -159,7 +159,7 @@
     \vfill
     %{\large{\underline{\bf Instructor}}\\\FACULTYNAME}\\
     %\vfill
-    %{\large \RPTDATE} % Date
+    {\large \RPTDATE} % Date
 
   \end{titlepage}
 }

@@ -3,21 +3,24 @@
 \begin{document}
 \chapter{Introduction}
 \section{The Background}
-The history of modulation techniques dates back to the early days of radio communication when Amplitude Modulation emerged as the pioneering method. Over time, Frequency Modulation gained prominence due to its resilience against noise and superior audio quality, particularly in broadcasting and mobile communication. Both AM and FM offer distinct advantages and trade-offs, prompting the need for a comprehensive performance analysis to better understand their strengths and limitations in contemporary communication systems.
+The history of modulation techniques dates back to the early days of radio communication when Amplitude Modulation emerged as the pioneering method. Over time, Frequency Modulation gained prominence due to its resilience against noise and superior audio quality, particularly in broadcasting and mobile communication \cite[p. 152]{haykinIntroductionAnalogDigital2007}. Both AM and FM offer distinct advantages and trade-offs, prompting the need for a comprehensive performance analysis to better understand their strengths and limitations in contemporary communication systems.
 
-Amplitude Modulation (AM) ??? %搞个简介
+Amplitude Modulation (AM) 
 
 Frequency Modulation 
 
 AWGN %why use awgn to simulate noise?
 
-\section{Problem Statement}
+% Why analyze noise?
+
+\section{Objects and Purposes}
 % Here starts the problem statement
-This project involves building an AM and FM communication system and applying AWGN to this system. The team simulates the modulation and demodulation process of both systems and compares the spectrums and waveforms of the message signals and demodulated signals, where both a multi-tone message and a piece of TTS-generated voice recording are applied as the message signals. The theoretical and experimental pre- and post-detection SNRs are calculated and measured respectively for each of the systems, which allows the team to evaluate the performance of the simulated communication systems.
+This project aims to analyze the performance of FM and AM communication systems in noise, which involves building an AM and FM communication system and applying AWGN to this system. Specifically, The AM signals should be demodulated by envelope detectors. The team is expected to simulate the modulation and demodulation process of both systems and compare the spectrums and waveforms of the message signals and demodulated signals, where both a multi-tone message and a piece of TTS-generated voice recording are applied as the message signals. The theoretical and experimental pre- and post-detection SNR should be obtained for the sake of performance analysis.
 
-% why multi-tone and TTS?
+The team should observe the difference between input and output signals and their spectrums, and conclude the characteristics of AM and FM modulation. A comparison of anti-noise performance should also be conducted.
 
-% Here starts the literature review
+By doing the project, the team should get a top-to-bottom understanding of the modulation process and demodulation process, and grasp the details of implementing the communication systems using Python. In detail, the team is expected to command the method of performing Fourier Transform and Hilbert Transform and the implementation of filters and envelope detectors.
+
 \section{Literature Review}
 % ways of building filters and getting envelopes
 % also info about choosing the bandwidth
