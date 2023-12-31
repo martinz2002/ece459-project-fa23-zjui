@@ -58,11 +58,11 @@
 {\thesection}{1em}{}
 
 \titleformat{\subsection}
-{\normalsize\bfseries}
+{\fontsize{12pt}{\baselineskip}\selectfont\bfseries}
 {\thesubsection}{1em}{}
 
 \titleformat{\subsubsection}
-{\normalsize\bfseries}
+{\fontsize{11pt}{\baselineskip}\selectfont\bfseries}
 {\thesubsubsection}{1em}{}
 
 % Enumerate list format
@@ -147,18 +147,19 @@
 \newcommand\makecoverpage{
   \begin{titlepage}
     \center % Center everything on the page
+    \sf
     \includegraphics[width=0.6\linewidth]{\LOGOPATH}\\[1cm]
     \textsc{\Large\COURSECODE}\\[0.5cm] % heading course Number
     \textsc{\Large\COURSENAME}\\[0.5cm] % heading course name
-    \textsc{\Large\RPTTYPE}\\[1cm] % Minor heading
+    {\Large\RPTTYPE}\\[1cm] % Minor heading
     \HRule \\[0.5cm]
     \huge \textbf{\MakeUppercase{\RPTTITLE}} % Title
     \HRule \\
     \vfill
     {\large\AUTHORNAME}
     \vfill
-    %{\large{\underline{\bf Instructor}}\\\FACULTYNAME}\\
-    %\vfill
+    {\large{\underline{\textbf{Instructor}}}\\\FACULTYNAME}\\
+    \vfill
     {\large \RPTDATE} % Date
 
   \end{titlepage}

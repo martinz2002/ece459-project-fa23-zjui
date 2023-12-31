@@ -3,27 +3,34 @@
 \begin{document}
 \chapter{Introduction}
 \section{The Background}
-The history of modulation techniques dates back to the early days of radio communication when Amplitude Modulation emerged as the pioneering method. Over time, Frequency Modulation gained prominence due to its resilience against noise and superior audio quality, particularly in broadcasting and mobile communication \cite[p. 152]{haykinIntroductionAnalogDigital2007}. Both AM and FM offer distinct advantages and trade-offs, prompting the need for a comprehensive performance analysis to better understand their strengths and limitations in contemporary communication systems.
+The history of modulation techniques dates back to the early days of radio communication when Amplitude Modulation emerged as the pioneering method. Over time, Frequency Modulation gained prominence due to its resilience against noise and superior audio quality, particularly in broadcasting and mobile communication \cite[p. 152]{haykinIntroductionAnalogDigital2007}. 
 
-Amplitude Modulation (AM) 
+Amplitude Modulation (AM) is a communication technique that transmits messages by modulating the amplitude of a radio frequency (RF) wave. This modulation is achieved through the combination of the message signal with a high-frequency carrier wave. The resulting modulated waves can be demodulated using either coherent detectors or envelope detectors.
 
-Frequency Modulation 
+Frequency Modulation (FM), classified as a form of Angle Modulation, involves integrating the message into the phase of an RF signal. Demodulation of the FM signal can be accomplished through the utilization of differentiators or slope circuits.
 
-AWGN %why use awgn to simulate noise?
+Both AM and FM present distinct advantages and trade-offs, necessitating a comprehensive performance analysis. Such an analysis is crucial for a thorough understanding of their strengths and limitations within contemporary communication systems.
 
-% Why analyze noise?
 
-\section{Objects and Purposes}
-% Here starts the problem statement
-This project aims to analyze the performance of FM and AM communication systems in noise, which involves building an AM and FM communication system and applying AWGN to this system. Specifically, The AM signals should be demodulated by envelope detectors. The team is expected to simulate the modulation and demodulation process of both systems and compare the spectrums and waveforms of the message signals and demodulated signals, where both a multi-tone message and a piece of TTS-generated voice recording are applied as the message signals. The theoretical and experimental pre- and post-detection SNR should be obtained for the sake of performance analysis.
 
-The team should observe the difference between input and output signals and their spectrums, and conclude the characteristics of AM and FM modulation. A comparison of anti-noise performance should also be conducted.
+\section{Objectives and Purposes}
 
-By doing the project, the team should get a top-to-bottom understanding of the modulation process and demodulation process, and grasp the details of implementing the communication systems using Python. In detail, the team is expected to command the method of performing Fourier Transform and Hilbert Transform and the implementation of filters and envelope detectors.
+This project is designed to conduct a comprehensive analysis of the performance of Frequency Modulation (FM) and Amplitude Modulation (AM) communication systems in the presence of noise. The methodology involves constructing an envelope-modulated AM and narrow-band FM communication system, with the subsequent application of Additive White Gaussian Noise (AWGN) to the system. Specifically, the demodulation of AM signals is to be carried out using envelope detectors.
+
+The team is tasked with simulating the modulation and demodulation processes for both systems and subsequently comparing the spectra and waveforms of the message signals and demodulated signals. The chosen message signals encompass both a multi-tone message and a Text-to-Speech (TTS)-generated voice recording. Theoretical and experimental pre- and post-detection signal-to-noise ratios (SNRs) are to be obtained to facilitate a comprehensive performance analysis.
+
+Furthermore, the team is required to meticulously observe disparities between input and output signals, as well as their spectra, in order to conclude the distinctive characteristics of AM and FM modulation. A comparative analysis of anti-noise performance is also imperative, involving the measurement of the signal-to-noise ratio (SNR). The evaluation of simulation performance itself is to be conducted by comparing theoretical and experimental pre- and post-detection SNRs.
+
+This project aims to equip the team with an in-depth understanding of both the modulation and demodulation processes, enabling a nuanced comprehension of the intricacies involved in implementing communication systems using Python. Specifically, the team is expected to demonstrate proficiency in performing Fourier Transform and Hilbert Transform, as well as implementing filters and envelope detectors.
+
 
 \section{Literature Review}
-% ways of building filters and getting envelopes
-% also info about choosing the bandwidth
-% 这里主要写理论，比如butter滤波器和Hilbert变换求包络的公式推导
+
+The textbook by \textcite[Sec. 3.1]{haykinIntroductionAnalogDigital2007} presents an intuitive method of envelope modulation. In this approach, the modulated signal is derived by combining a carrier wave with an amplified and DC-shifted message signal. For the demodulation process, the team references Haykin's work, particularly \cite[Fig. 9.8]{haykinIntroductionAnalogDigital2007}. \textcite{ulrichEnvelopeCalculationHilbert2006} introduces an alternative method of envelope detection utilizing Hilbert Transformation. This technique, when employed in conjunction with the \verb|scipy.signal| package, streamlines the implementation of envelope detector design.
+
+The Direct Method of Frequency Modulation (FM) signal generation, as illustrated in \cite[Fig. 4.7]{haykinIntroductionAnalogDigital2007}, involves components such as an integrator, a phase modulator, and a local oscillator. The demodulation process for FM is also elucidated in the same textbook, specifically in \cite[Fig. 9.13]{haykinIntroductionAnalogDigital2007}.
+
+The realization of ideal filters poses challenges due to the discontinuous frequency response. However, the Butterworth filter offers a practical solution for simulating real-world filters, as discussed in the works of Storr \cite{storrButterworthFilterDesign2013} and Khetarpal et al. \cite{khetarpalZaiPythonZhongShiXianDiTongLuBoQi2022}. Implementation of the Butterworth filter can be achieved using the \verb|scipy.signal| package.
+
 
 \end{document}
