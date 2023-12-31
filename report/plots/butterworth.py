@@ -20,6 +20,7 @@ plt.ylim(-80, 10)
 # plt.margins(0, 0.1)
 plt.grid(which='both', axis='both')
 plt.axvline(100, color='green') # cutoff frequency
+plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
 plt.show()
 
@@ -37,5 +38,6 @@ plt.ylim(-100, 10)
 plt.grid(which='both', axis='both')
 plt.axvline(100, color='green') # cutoff frequency
 plt.axvline(200, color='green') # cutoff frequency
+plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
 plt.show()
