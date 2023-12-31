@@ -2,22 +2,25 @@
 
 \begin{document}
 \chapter{Introduction}
-This task involves building an Amplitude Modulation (AM) system using Python (or another programming language) and performing a series of simulations and analyses. 
+\section{The Background}
+The history of modulation techniques dates back to the early days of radio communication when Amplitude Modulation emerged as the pioneering method. Over time, Frequency Modulation gained prominence due to its resilience against noise and superior audio quality, particularly in broadcasting and mobile communication. Both AM and FM offer distinct advantages and trade-offs, prompting the need for a comprehensive performance analysis to better understand their strengths and limitations in contemporary communication systems.
 
-The specific steps include:
+Amplitude Modulation (AM) ??? %搞个简介
 
-\begin{enumerate}
-    \item Simulating Envelope Modulation with a Sinusoidal Wave and a Modulation Index of 0.3: First, we need to create a sinusoidal wave to act as the message signal and use this signal to modulate a carrier signal. The modulation index of 0.3 refers to the extent to which the message signal modulates the carrier signal. The goal here is to generate an AM signal whose envelope reflects the shape of the message signal.
-    \item Including AWGN Noise: Additive White Gaussian Noise (AWGN) is introduced into the modulated signal to simulate noise interference common in real communication environments. This makes the signal more representative of actual communication signals and tests the robustness of signal detection.
-    \item Performing Envelope Detection: Envelope detection is the process of recovering the original message signal from the modulated carrier signal. In this step, we will process the noisy AM signal to extract its envelope, representing the original message signal.
-\end{enumerate}
+Frequency Modulation 
 
-The specific tasks include:
+AWGN %why use awgn to simulate noise?
 
-\begin{enumerate}
-    \item Plotting the Envelope Modulated Signal: Show the waveform of the signal after envelope modulation in the time domain.
-    \item Plotting Its Spectrum: Create a spectrum plot of the modulated signal to display its frequency domain distribution.
-    \item Plotting the Envelope-Detected Signal Before Low-Pass Filtering: Display the waveform of the signal obtained through envelope detection before applying low-pass filtering to remove noise.
-    \item  Comparing Post-Detection Signal-to-Noise Ratio (SNR) to Theoretical Values: Calculate the post-detection SNR for both low and high pre-detection SNR scenarios and compare these values to theoretical predictions. This comparison helps understand the performance of the signal detection algorithm under different noise levels.
-\end{enumerate}
+\section{Problem Statement}
+% Here starts the problem statement
+This project involves building an AM and FM communication system and applying AWGN to this system. The team simulates the modulation and demodulation process of both systems and compares the spectrums and waveforms of the message signals and demodulated signals, where both a multi-tone message and a piece of TTS-generated voice recording are applied as the message signals. The theoretical and experimental pre- and post-detection SNRs are calculated and measured respectively for each of the systems, which allows the team to evaluate the performance of the simulated communication systems.
+
+% why multi-tone and TTS?
+
+% Here starts the literature review
+\section{Literature Review}
+% ways of building filters and getting envelopes
+% also info about choosing the bandwidth
+% 这里主要写理论，比如butter滤波器和Hilbert变换求包络的公式推导
+
 \end{document}
