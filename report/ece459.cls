@@ -67,12 +67,11 @@
 
 % Enumerate list format
 \setenumerate[1]{
-  itemsep=1em,partopsep=0pt,parsep=\parskip,topsep=5pt}
+  itemsep=0pt,partopsep=0pt,parsep=0pt,topsep=2ex}
 \setitemize[1]{
-  itemsep=1em,partopsep=0pt,parsep=\parskip,topsep=5pt}
+  itemsep=0pt,partopsep=0pt,parsep=0pt,topsep=2ex}
 \setdescription{
-  itemsep=1em,partopsep=0pt,parsep=\parskip,topsep=5pt}
-\setlength{\topsep}{0ex} %列表到上下文的垂直距离
+  itemsep=0pt,partopsep=0pt,parsep=0pt,topsep=2ex}
 \setlength{\parindent}{2em}
 \setlength{\headheight}{14pt}
 \pagestyle{fancy}\fancyhf{}
