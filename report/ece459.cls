@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ece459}[2023-09-14 ECE 459 Final Report Template]
 
-\LoadClass[a4paper,10pt,oneside]{book}
+\LoadClass[a4paper,10pt,twoside]{book}
 
 \RequirePackage{booktabs}
 \RequirePackage{tabularx}
