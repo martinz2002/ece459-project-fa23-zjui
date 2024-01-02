@@ -22,6 +22,7 @@ plt.grid(which='both', axis='both')
 plt.axvline(100, color='green') # cutoff frequency
 plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 for n in range(2, 9):
@@ -35,8 +36,9 @@ plt.ylabel('Amplitude')
 # plt.margins(0, 0.1)
 plt.grid(which='both', axis='both')
 plt.axvline(100, color='green') # cutoff frequency
-plt.axhline(-3, color='black', linestyle='--') # -3db
+# plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 for n in range(2, 9):
@@ -55,6 +57,7 @@ plt.axvline(100, color='green') # cutoff frequency
 plt.axvline(200, color='green') # cutoff frequency
 plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 for n in range(2, 9):
@@ -69,6 +72,7 @@ plt.ylabel('Amplitude')
 plt.grid(which='both', axis='both')
 plt.axvline(100, color='green') # cutoff frequency
 plt.axvline(200, color='green') # cutoff frequency
-plt.axhline(-3, color='black', linestyle='--') # -3db
+# plt.axhline(-3, color='black', linestyle='--') # -3db
 plt.legend()
+plt.tight_layout()
 plt.show()

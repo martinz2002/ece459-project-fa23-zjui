@@ -2,28 +2,17 @@
 
 \begin{document}
 \chapter{Methodology}
-The project simulates the AM and FM communication systems respectively which applies Python 3. The work is done using Jupyter Notebook. Packages imported include \verb|numpy| for numerical computation, \verb|scipy| for signal analysis, and \verb|matplotlib| for plotting.
+This chapter presents the methodology employed in the project using Python 3. The simulations were executed within the Jupyter Notebook environment, leveraging essential packages for numerical computation, signal analysis, and plotting, namely \verb|numpy|, \verb|scipy|, and \verb|matplotlib|.
 
 \section{Choice of Message Signal}
 
-Two message signals are tested in this project:
+Two distinct message signals were selected for thorough investigation in this project:
 \begin{enumerate}
     \item The multi-tone sinusoidal signal $m_1 (t) = A_1\cos(2\pi f_1 t + \phi_1) + A_2 \cos(2\pi f_2 t + \phi_2)$.
     \item The TTS-generated male voice recording.
 \end{enumerate}
 
-The choice of the multi-tone signal lies in its simplicity as a periodic function and special properties as a linear combination of two sinusoidal functions. Such choice allows the team to observe the distortion by noise in an easier way, as the sinusoidal functions have relatively simple frequency spectrums. The male voice recording enables the team to practice the designed communication system in a more realistic scenario.
-
-Generating the multi-tone signal can be achieved by Python expression
-\begin{lstlisting}[language=python]
-t = np.arange(0, duration, 1/fs) # time vector
-message = A1 * np.cos(2 * np.pi * f1 * t + phi1) + A2 * np.cos(2 * np.pi * f2 * t + phi2)
-\end{lstlisting}
-and generating the voice signal from a wave audio file can be achieved by
-\begin{lstlisting}[language=python]
-fs, audio_data = wavfile.read('audio.wav') # fs is the sampling rate of the audio file
-t = np.arange(0, len(data)/fs, 1/fs) # time vector
-\end{lstlisting}
+The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions. On the other hand, the utilization of a TTS-generated male voice recording introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context.
 
 \section{AM Simulation}
 \section{Envelope Modulation}
@@ -72,46 +61,37 @@ Here, \verb|data| refers to the array containing samples of the message signal, 
 \subsection{Ideal Filters}
 % 讲LPF和BPF的TF，然后引出为什么ideal filter无法实现，再引出butterworth
 ~
-\subsection{Butterworth Filter}
+\subsection{Butterworth Filter in Python}
 
-Both AM and FM communication systems require filters. Yet in real life, ideal filters are not implementable. However, the Butterworth Filter can behave closely to the ideal filter. According to \cite{storrButterworthFilterDesign2013,kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter has a maximum flat frequency response within its passband and rolls off quickly at the cut-off frequency.
+Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth Low Pass Filter (LPF) and Band Pass Filter (BPF) with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
 
-The transfer function of a Butterworth Low Pass Filter is expressed as
+In the digital realm, Python facilitates the implementation of filters as digital IIR/FIR filters, with each filter in the $z$-domain expressed as the quotient of two polynomials:
 \begin{equation}
-    \left| H\left( \omega \right) \right|^2=\frac{1}{1+\left( \frac{\omega}{\omega _c} \right) ^{2n}}
+H_{\text{filter}}(z) = \frac{\sum_{n=0}^{\infty}{a_nz^{-n}}}{\sum_{m=0}^{\infty}{b_mz^{-m}}}
 \end{equation}
-where $n$ is the order of the filter and $\omega_c$ is the cut-off frequency. The higher the order $n$, the closer the Butterworth Filter behaves like an ideal filter. Similarly, the transfer function of a Butterworth Band Pass Filter is???????
 
-According to \textcite{thescipycommunityScipySignalButter,thescipycommunityScipySignalButtera,thescipycommunityScipySignalFiltfilt,thescipycommunityScipySignalLfilter}, the filters can be realized in the following way: ?????????????
-%!! Needs Modification!!!!
+The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as detailed by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}. A practical instantiation of an IIR filter is exemplified below:
 \begin{lstlisting}[language=python]
-# Low Pass Filter
-# Get coefficients for butter filter
-b, a = signal.butter(4, 100, 'low', analog=True)
-w, h = signal.freqs(b, a)
-sos = signal.butter(10, 15, 'hp', fs=1000, output='sos')
-filtered = signal.sosfilt(sos, sig)
-
-# Band Pass Filter
-# Get coefficients for butter filter
-b, a = signal.butter(4, [50, 100], 'band', analog=True)
-w, h = signal.freqs(b, a)
-sos = signal.butter(10, 15, 'hp', fs=1000, output='sos')
-filtered = signal.sosfilt(sos, sig)
+# Generate an 8-order 40 Hz to 80 Hz IIR BPF, sample rate = fs
+b, a = butter(N=8, [40, 80], btype='band', fs=fs)
+# Apply the filter to the message signal
+filtered_signal = filtfilt(b, a, message)
 \end{lstlisting}
 
+Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} showcase the frequency response of a Butterworth LPF and BPF, respectively, each featuring a cut-off frequency of $\omega_c = \SI{100}{\radian\per\s}$. The black dashed line denotes the \SI{-3}{\dB} amplitude.
 
-\begin{figure}[b]
+\begin{figure}[htb]
     \centering
-    \includegraphics[scale=0.7]{plots/butterworth-lpf.pdf}
+    \includegraphics[width=0.45\linewidth]{plots/butterworth-lpf.pdf}
+    \includegraphics[width=0.45\linewidth]{plots/butterworth-lpf-nolog.pdf}
     \caption{The frequency response of a Butterworth LPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$. The black dash line shows the \SI{-3}{\dB} amplitude.}
     \label{fig:butter-lpf}
 \end{figure}
-
-\begin{figure}[b]
+\begin{figure}[htb]
     \centering
-    \includegraphics[scale=0.7]{plots/butterworth-bpf.pdf}
-    \caption{The frequency response of a Butterworth BPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$. The black dash line shows the \SI{-3}{\dB} amplitude.}
+    \includegraphics[width=0.45\linewidth]{plots/butterworth-bpf.pdf}
+    \includegraphics[width=0.45\linewidth]{plots/butterworth-bpf-nolog.pdf}
+    \caption{The frequency response of a Butterworth BPF with pass-band from \SI{100}{Hz} to \SI{200}{Hz}. The black dash line shows the \SI{-3}{\dB} amplitude.}
     \label{fig:butter-bpf}
 \end{figure}
 
