@@ -9,10 +9,30 @@ This chapter presents the methodology employed in the project using Python 3. Th
 Two distinct message signals were selected for thorough investigation in this project:
 \begin{enumerate}
     \item The multi-tone sinusoidal signal $m_1 (t) = A_1\cos(2\pi f_1 t + \phi_1) + A_2 \cos(2\pi f_2 t + \phi_2)$.
-    \item The TTS-generated male voice recording.
+    \item The TTS-generated recording of a male voice reading ``ECE 459 is so interesting.''
 \end{enumerate}
 
-The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions. On the other hand, the utilization of a TTS-generated male voice recording introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context.
+The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions. 
+
+The utilization of a TTS-generated male voice recording, on the other hand, introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context. Such recording has no background noise between words, which enables the team to better observe the distortion by the simulated noise process.
+
+\section{Additive White Gaussian Noise}
+Additive White Gaussian Noise (AWGN) refers to a Gaussian process that can be directly added to a signal to approximate a noise-distorted signal in a real-life communication channel.
+
+According to \cite[Sec. 8.10]{haykinIntroductionAnalogDigital2007}, a noise process is called white noise if it has zero mean and its power spectral density satisfies
+\begin{equation}
+    S_W(f) = \frac{N_0}{2}.
+\end{equation}
+
+The power spectrum of a white noise process is shown in Figure \ref{fig:white-noise-spectrum}.
+\begin{figure}[htb]
+    \centering
+    \includegraphics[scale=0.4]{plots/white-noise-power-spectrum.pdf}
+    \caption{The power spectrum of a white noise process.}
+    \label{fig:white-noise-spectrum}
+\end{figure}
+
+%todo: 写一下Python产生的Gaussian过程+功率谱
 
 \section{AM Simulation}
 \subsection{Envelope Modulation}
@@ -33,7 +53,7 @@ This condition is crucial to prevent envelope distortion, as outlined by \textci
 The implementation of amplitude modulation (AM) can be illustrated through the block diagram depicted in Figure \ref{fig:env-mod}.
 \begin{figure}[b]
     \centering
-    \includegraphics[scale=0.7]{plots/env_mod.pdf}
+    \includegraphics[scale=0.6]{plots/env_mod.pdf}
     \caption{Block diagram illustrating the process of envelope modulation.}
     \label{fig:env-mod}
 \end{figure}
@@ -76,13 +96,37 @@ Thus, the envelope of an envelope-modulated signal can be derived by calculating
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=.9\linewidth]{plots/env-demod.pdf}
+    \includegraphics[width=\linewidth]{plots/env-demod.pdf}
     \caption{Block diagram illustrating the process of envelope demodulation.}
     \label{fig:env-demod}
 \end{figure}
 
 \subsection{SNR Calculation and Measurement}
-~
+\subsubsection{Pre-Detection SNR}
+As is stated in \textcite[Eq. (9.26)]{haykinIntroductionAnalogDigital2007}, the theoretical pre-detection SNR in an envelope modulation receiver can be calculated by
+\begin{equation}
+  \SNR_{\text{pre, theoretical}}^{\text{AM}} = \frac{A_c^2 (1+k_a^2)P}{2N_0 B_T}
+\end{equation}
+where $A_c$ is the carrier amplitude, $k_a$ is the modulation sensitivity, $P$ is the power of message signal, $N_0$ is twice the power spectral density of white noise and $B_T$ is the noise bandwidth of the BPF.
+
+Following the notation in Figure \ref{fig:env-demod}, the actual pre-detection SNR can be measured as
+\begin{equation}
+    \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x(t)]}{\E[\text{noise}^2]}.
+\end{equation}
+
+\subsubsection{Post-Detection SNR}
+
+The textbook \cite[Eq. (9.23)]{haykinIntroductionAnalogDigital2007} states that the theoretical post-detection SNR in an envelope modulation receiver is expressed as
+\begin{equation}
+    \SNR_{\text{post, theoretical}}^{\text{AM}} = \frac{A_c^2 k_a^2 P}{2N_0 W}
+\end{equation}
+which is a valid approximation only for high SNR and $0<k_a<100\%$. 
+
+%todo：如何实际测量post-detection SNR
+
+%todo：考虑是否要找一下在高pre-detection SNR和低pre-detection SNR的情况下post-detection分别是什么关系，
+%todo：书上有图9.12
+
 \section{FM Simulation}
 \subsection{Narrow-Band FM Modulation}
 ~
@@ -92,11 +136,11 @@ Thus, the envelope of an envelope-modulated signal can be derived by calculating
 ~
 \section{Filter Design}
 \subsection{Ideal Filters}
-% 讲LPF和BPF的TF，然后引出为什么ideal filter无法实现，再引出butterworth
+%todo 讲LPF和BPF的TF，然后引出为什么ideal filter无法实现，再引出butterworth
 ~
 \subsection{Butterworth Filter in Python}
 
-Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth Low Pass Filter (LPF) and Band Pass Filter (BPF) with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
+Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth LPF and BPF with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
 
 In the digital realm, Python facilitates the implementation of filters as digital IIR/FIR filters, with each filter in the $z$-domain expressed as the quotient of two polynomials:
 \begin{equation}
@@ -129,7 +173,5 @@ Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} showcase the frequency res
 \end{figure}
 
 
-\section{Additive White Gaussian Noise}
-% Definition, principles, and how to generate in Python
 
 \end{document}
