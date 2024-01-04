@@ -220,4 +220,10 @@ The response of the filter is uniquely determined by coefficients $a_i$ and $b_j
 % difference between digital and analog, what error will be brought
 % how to compensate? --> 加长信号
 
+（1）Inside the computer signals cannot be processed as the way they should be in a real analog circuit. As is mentioned above, all filters the team applied are digital filters, and all spectrums are obtained by Fast Fourier Transformation (FFT) algorithms. 过低的采样率会导致频谱分辨率过低，导致无法正确reconstruct原信号。根据\textcite[Sec. 7.3.3]{manolakisAppliedDigitalSignal2011}，可以使用Zero-Padding来提高采样点数？
+
+（2）究竟是FFT导致的时域信号出现起始、末尾的波动，还是Digital Filter导致的？
+
+解决方案：在信号前后增加时长，处理后重新截掉无用部分
+
 \end{document}
