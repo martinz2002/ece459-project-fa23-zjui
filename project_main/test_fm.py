@@ -5,12 +5,14 @@ from scipy.signal import hilbert
 def generate_multi_tone_signal(duration, sample_rate, frequencies, amplitudes):
     # t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     # signal = np.sum([amplitude * np.sin(2 * np.pi * frequency * t) for frequency, amplitude in zip(frequencies, amplitudes)], axis=0)
+    padded_signal = np.zeros(3 * int(sample_rate * duration))
     signal = np.zeros(int(sample_rate * duration))
     signal[0:int(0.1*duration*sample_rate)] = 1
     signal[int(0.3*duration*sample_rate):int(0.4*duration*sample_rate)] = 1
     signal[int(0.6*duration*sample_rate):int(0.8*duration*sample_rate)] = 1
-    t = np.linspace(0, duration, len(signal), endpoint=False)
-    return t, signal
+    padded_signal[int(sample_rate * duration):2*int(sample_rate * duration)] = signal
+    t = np.linspace(0, 3*duration, 3*len(signal), endpoint=False)
+    return t, padded_signal
 
 def fm_modulation(input_signal, carrier_frequency, modulation_index, sample_rate):
     t = np.linspace(0, len(input_signal) / sample_rate, len(input_signal), endpoint=False)
