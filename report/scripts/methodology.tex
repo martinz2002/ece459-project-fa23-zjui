@@ -170,7 +170,7 @@ where $f_{m,\mathrm{max}}$ is the highest modulating frequency. The ratio of $\D
 \begin{equation}
     \beta = \frac{\Delta f}{f_m}.
 \end{equation}
-In this project, the modulation index is specified as $\beta=3$.
+In this project, the modulation index is specified as $\beta=0.3$.
 
 Such modulation can be done using a direct method \cite[Sec. 4.7]{haykinIntroductionAnalogDigital2007}, where the frequency modulator contains an oscillator directly controllable by the message signal. Figure \ref{fig:fm-mod} illustrates this process: the message signal is taken integral and sent to the controllable oscillator to produce a phase-variant signal, which is the modulated wave.
 
@@ -201,28 +201,18 @@ In the digital realm, Python facilitates the implementation of filters as digita
 H_{\text{filter}}(z) = \frac{\sum_{p=0}^{n}{a_pz^{-p}}}{\sum_{q=0}^{n}{b_qz^{-q}}}
 \end{equation}
 
-The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as documented by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}. A practical instantiation of an IIR filter is exemplified below:
-\begin{lstlisting}[language=python]
-# Generate an 8-order 40 Hz to 80 Hz IIR BPF, sample rate = fs
-b, a = butter(N=8, [40, 80], btype='band', fs=fs)
-# Apply the filter to the message signal
-filtered_signal = filtfilt(b, a, message)
-\end{lstlisting}
-
-Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} showcase the frequency response of a Butterworth LPF and BPF, respectively, each featuring a cut-off frequency of $\omega_c = \SI{100}{\radian\per\s}$. The black dashed line denotes the \SI{-3}{\dB} amplitude.
+The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as documented by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}.
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.45\linewidth]{plots/butterworth-lpf.pdf}
-    \includegraphics[width=0.45\linewidth]{plots/butterworth-lpf-nolog.pdf}
-    \caption{The frequency response of a Butterworth LPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$. The black dash line shows the \SI{-3}{\dB} amplitude.}
+    \includegraphics[scale=.6]{plots/butterworth-lpf-nolog.pdf}
+    \caption{The frequency response of a Butterworth LPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$.}
     \label{fig:butter-lpf}
 \end{figure}
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.45\linewidth]{plots/butterworth-bpf.pdf}
-    \includegraphics[width=0.45\linewidth]{plots/butterworth-bpf-nolog.pdf}
-    \caption{The frequency response of a Butterworth BPF with pass-band from \SI{100}{Hz} to \SI{200}{Hz}. The black dash line shows the \SI{-3}{\dB} amplitude.}
+    \includegraphics[scale=.6]{plots/butterworth-bpf-nolog.pdf}
+    \caption{The frequency response of a Butterworth BPF with pass-band from \SI{100}{Hz} to \SI{200}{Hz}.}
     \label{fig:butter-bpf}
 \end{figure}
 
