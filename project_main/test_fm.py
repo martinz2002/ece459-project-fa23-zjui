@@ -1,15 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import hilbert
+from scipy.io import wavfile
 
 def generate_multi_tone_signal(duration, sample_rate, frequencies, amplitudes):
     # t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     # signal = np.sum([amplitude * np.sin(2 * np.pi * frequency * t) for frequency, amplitude in zip(frequencies, amplitudes)], axis=0)
+    # read signal from wav
+    sample_rate, signal = wavfile.read('audio.wav')
+    duration = len(signal) / sample_rate
     padded_signal = np.zeros(3 * int(sample_rate * duration))
-    signal = np.zeros(int(sample_rate * duration))
-    signal[0:int(0.1*duration*sample_rate)] = 1
-    signal[int(0.3*duration*sample_rate):int(0.4*duration*sample_rate)] = 1
-    signal[int(0.6*duration*sample_rate):int(0.8*duration*sample_rate)] = 1
+    # signal = np.zeros(int(sample_rate * duration))
+    # signal[0:int(0.1*duration*sample_rate)] = 1
+    # signal[int(0.3*duration*sample_rate):int(0.4*duration*sample_rate)] = 1
+    # signal[int(0.6*duration*sample_rate):int(0.8*duration*sample_rate)] = 1
     padded_signal[int(sample_rate * duration):2*int(sample_rate * duration)] = signal
     t = np.linspace(0, 3*duration, 3*len(signal), endpoint=False)
     return t, padded_signal
@@ -46,7 +50,7 @@ def plot_signals(t, input_signal, modulated_signal, demodulated_signal, title1, 
     plt.title(title3)
     plt.xlabel('Time (s)')
     plt.ylabel('Frequency (Hz)')
-    plt.ylim(990,1010)
+    # plt.ylim(990,1010)
 
     plt.tight_layout()
     plt.show()
