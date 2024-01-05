@@ -45,7 +45,7 @@
 \renewcommand*{\UrlFont}{\rmfamily}
 \newfontfamily{\cambria}{Cambria}
 \newfontfamily{\calibri}{Calibri}
-\everymath{\displaystyle}
+% \everymath{\displaystyle}
 
 % Chapter/section/subsection title format
 \titleformat{\chapter}
