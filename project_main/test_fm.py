@@ -9,13 +9,15 @@ def generate_multi_tone_signal(duration, sample_rate, frequencies, amplitudes):
     # read signal from wav
     sample_rate, signal = wavfile.read('audio.wav')
     duration = len(signal) / sample_rate
-    padded_signal = np.zeros(3 * int(sample_rate * duration))
+    padded_signal = np.zeros(8 * int(sample_rate * duration))
     # signal = np.zeros(int(sample_rate * duration))
     # signal[0:int(0.1*duration*sample_rate)] = 1
     # signal[int(0.3*duration*sample_rate):int(0.4*duration*sample_rate)] = 1
     # signal[int(0.6*duration*sample_rate):int(0.8*duration*sample_rate)] = 1
     padded_signal[int(sample_rate * duration):2*int(sample_rate * duration)] = signal
-    t = np.linspace(0, 3*duration, 3*len(signal), endpoint=False)
+    padded_signal[3 * int(sample_rate * duration):4*int(sample_rate * duration)] = signal
+    padded_signal[5 * int(sample_rate * duration):6*int(sample_rate * duration)] = signal
+    t = np.linspace(0, 8*duration, 8*len(signal), endpoint=False)
     return t, padded_signal
 
 def fm_modulation(input_signal, carrier_frequency, modulation_index, sample_rate):
