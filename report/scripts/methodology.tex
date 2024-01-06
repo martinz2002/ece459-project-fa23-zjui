@@ -1,89 +1,151 @@
 \documentclass[../ECE459FinalProjectReport.tex]{subfiles}
-
 \begin{document}
 \chapter{Methodology}
-This chapter presents the methodology employed in the project using Python 3. The simulations were executed within the Jupyter Notebook environment, leveraging essential packages for numerical computation, signal analysis, and plotting, namely \verb|numpy|, \verb|scipy|, and \verb|matplotlib|.
+This chapter presents the methodology and the relevant theories employed in the project. The simulations were executed within the Jupyter Notebook environment, leveraging essential packages for numerical computation, signal analysis, and plotting, namely \verb|numpy|, \verb|scipy|, and \verb|matplotlib|.
 
-\section{Choice of Message Signal}
-
+\section{The Message Signals}
+\subsection{The Choices of Message Signals}
 Two distinct message signals were selected for thorough investigation in this project:
 \begin{enumerate}
     \item The multi-tone sinusoidal signal $\sum_{i=1}^n m (t) = A_i\cos(2\pi f_i t + \phi_i)$.
     \item The TTS-generated recording of a male voice reading ``ECE 459 is so interesting.''
 \end{enumerate}
 
-The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions. 
+The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions.
 
-The utilization of a TTS-generated male voice recording, on the other hand, introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context. Such recording has no background noise between words, which enables the team to better observe the distortion by the simulated noise process.
+The utilization of a TTS-generated male voice recording, on the other hand, introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context. Such recording has no background noise between words, which enables the team to better observe the distortion by the simulated noise process. The signal is plotted as Figure \ref{fig:audio-time}.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/audio_time.png}
+    \caption{The waveform of the TTS-generated recording.}
+    \label{fig:audio-time}
+\end{figure}
+
+\subsection{Bandwidth of Signals}
+It is of significance to measure the bandwidth of message signals. The bandwidth can be determined by analytical calculations or by visually analyzing the spectrums.
+
+As is stated in \cite[Sec. 7.2.3]{kudekiAnalogSignalsSystems2009} and illustrated in Figure \ref{fig:bw}, the bandwidth of a band-limited signal, $B_T$, is the minimum frequency component that the signal has almost zero magnitude at any $f>B_W$, which means
+\begin{equation}\label{eq:bw-def}
+    S\left( f \right) =
+    \begin{cases}
+        \napprox 0, & \text{for} \left| f \right|=B_T      \\
+        \approx 0,  & \text{for any }\left| f \right| >B_T \\
+    \end{cases}.
+\end{equation}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[scale=.5]{plots/bw.pdf}
+    \caption{The bandwidth of the signal is $B_W$.}
+    \label{fig:bw}
+\end{figure}
+
+Consider the multi-tone sinusoidal signal $\gamma \left(t\right) = A_i\cos\left(2\pi f_i t + \phi_i\right)$. Its Fourier Transform is
+\begin{equation}
+    \Gamma \left(f\right) = \sum_{i=1}^{n} \frac{jA_i}{2}\left\lbrace \delta\left[ 2\pi \left(f + f_i \right)\right] - \delta\left[ 2\pi \left(f - f_i \right)\right]\right\rbrace
+\end{equation}
+Hence the spectrum of $\gamma\left(t\right)$ should be similar to Figure \ref{fig:multi-tone-spectrum}. It is apparent that by Equation \eqref{eq:bw-def}, the bandwidth is $B_T = f_m$.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[scale=.35]{plots/multi-tone_spectrum.pdf}
+    \caption{The spectrum of a multi-tone signal $\gamma\left(t\right)$. $B_T$ is the bandwidth of the signal.}
+    \label{fig:multi-tone-spectrum}
+\end{figure}
+
+The bandwidth of the TTS-generated recording can be determined by its spectrum. Note that the recording is generated using the male's voice, which typically ranges from \SI{80}{Hz} to \SI{200}{\Hz}. The spectrum of the recording is plotted as Figure \ref{fig:audio-spectrum}, where it is observed that the majority of power is concentrated within \SI{1}{kHz}. This is an important guidance for determining the cut-off frequency of the LPFs we used in the project.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum.png}
+    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum_8khz.png}
+    \caption{The spectrum of the audio recording. (a) The total spectrum. (b) The spectrum within \SI{8}{kHz}.}
+    \label{fig:audio-spectrum}
+\end{figure}
 
 \section{Additive White Gaussian Noise}
 Additive White Gaussian Noise (AWGN) refers to a Gaussian process that can be directly added to a signal to approximate a noise-distorted signal in a real-life communication channel.
 
-According to \cite[Sec. 8.10]{haykinIntroductionAnalogDigital2007}, a noise process is called white noise if it has zero mean and its power spectral density satisfies
+According to \cite[Sec. 8.10]{haykinIntroductionAnalogDigital2007}, a noise process is called white noise if it has zero-mean and its power spectral density satisfies
 \begin{equation}
-    S_W(f) = \frac{N_0}{2}.
+    S_W\left(f\right) = \frac{N_0}{2}.
 \end{equation}
-
 The power spectrum of a white noise process is shown in Figure \ref{fig:white-noise-spectrum}.
-\begin{figure}[htb]
+\begin{figure}[tb]
     \centering
-    \includegraphics[scale=0.4]{plots/white-noise-power-spectrum.pdf}
+    \includegraphics[scale=0.35]{plots/white-noise-power-spectrum.pdf}
     \caption{The power spectrum of a white noise process.}
     \label{fig:white-noise-spectrum}
 \end{figure}
 
-%todo: 写一下Python产生的Gaussian过程+功率谱
+In this project, the AWGN process will be simulated using \verb|numpy.random.normal()| function. Figures \ref{fig:gaussian-noise-time} and \ref{fig:gaussian-noise-freq} show a Python-generated Gaussian noise process and its frequency spectrum.
+\begin{figure}[tb]
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{plots/gaussian_noise.png}
+        \caption{The waveform of Gaussian noise. Note that the mean of a white noise process is zero.}
+        \label{fig:gaussian-noise-time}
+    \end{minipage}
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{plots/gaussian_noise_spectrum.png}
+        \caption{The spectrum of Gaussian noise.}
+        \label{fig:gaussian-noise-freq}
+    \end{minipage}
+\end{figure}
+
 
 \section{AM Simulation}
 \subsection{Envelope Modulation}
 %?? What about transmission bandwidth??
-Consider a message signal $m(t)$ and carrier wave $A_c \cos(2\pi f_c t + \phi)$ where $\phi$ is the phase delay of the local oscillator. In this project, we pick $\phi = 0$ for simplicity. The modulation of a message signal, denoted as $m(t)$, can be achieved through envelope modulation, represented by the equation:
+Consider a message signal $m\left(t\right)$ and carrier wave $A_c \cos\left(2\pi f_c t + \phi\right)$ where $\phi$ is the phase delay of the local oscillator. In this project, we pick $\phi = 0$ for simplicity. The modulation of a message signal, denoted as $m\left(t\right)$, can be achieved through envelope modulation, represented by the equation:
 \begin{equation}
-    s(t) = A_c [1 + k_a m(t)] \cos (2\pi f_c t + \phi)
+    s\left(t\right) = A_c \left[1 + k_a m\left(t\right)\right] \cos \left(2\pi f_c t + \phi\right)
 \end{equation}
-In this expression, $k_a$ denotes the modulation sensitivity, $A_c$ corresponds to the amplitude of the carrier wave, and $f_c$ represents the frequency of the carrier wave. It is imperative to ensure that the carrier wave frequency $f_c$ significantly surpasses the highest frequency component, denoted as $W$, of the message signal $m(t)$ to prevent aliasing. This condition can be expressed as $f_c \gg W$. Moreover, the choice of the modulation sensitivity, $k_a$, needs to adhere to the constraint which is crucial to prevent envelope distortion, as outlined by \textcite[pp. 101-102]{haykinIntroductionAnalogDigital2007}:
+In this expression, $k_a$ denotes the modulation sensitivity, $A_c$ corresponds to the amplitude of the carrier wave, and $f_c$ represents the frequency of the carrier wave. It is imperative to ensure that the carrier wave frequency $f_c$ significantly surpasses the highest frequency component, denoted as $W$, of the message signal $m\left(t\right)$ to prevent aliasing. This condition can be expressed as $f_c \gg W$. Moreover, the choice of the modulation sensitivity, $k_a$, needs to adhere to the constraint which is crucial to prevent envelope distortion, as outlined by \textcite[pp. 101-102]{haykinIntroductionAnalogDigital2007}:
 \begin{equation}
-    \left| k_a m(t) \right| < 1, \quad \text{for all }t.
+    \left| k_a m\left(t\right) \right| < 1, \quad \text{for all }t.
 \end{equation}
 
 The product of modulation sensitivity $k_a$ and amplitude of message signal $A_m$
 \begin{equation}
     \mu = k_a A_m
 \end{equation}
-is called the modulation factor, or as stated by \cite{sasmitaModulationIndexModulation2020}, the \textit{modulation index}. It can be alternatively expressed as
+is called the modulation factor, or as stated by \cite{sasmitaModulationIndexModulation2020}, the \textit{modulation index}, which can be alternatively expressed as
 \begin{equation}
     \mu = \frac{A_m}{A_c}.
 \end{equation}
 In this project, the AM modulation index is specified as $\mu=0.3$.
 
-The implementation of amplitude modulation (AM) can be illustrated through the block diagram depicted in Figure \ref{fig:env-mod}. The message signal is amplified by a gain $k_a$ and is added a DC offset. The carrier wave is then multiplied with the scaled and shifted message signal, which produces the envelope-modulated wave that is to be transmitted through the channel.
-\begin{figure}[b]
+The implementation of amplitude modulation can be illustrated through the block diagram depicted in Figure \ref{fig:env-mod}. The message signal is amplified by a gain $k_a$ and is added a DC offset. The carrier wave is then multiplied with the scaled and shifted message signal, which produces the envelope-modulated wave that is to be transmitted through the channel.
+\begin{figure}[tb]
     \centering
-    \includegraphics[scale=0.6]{plots/env_mod.pdf}
+    \includegraphics[scale=0.5]{plots/env_mod.pdf}
     \caption{Block diagram illustrating the process of envelope modulation.}
     \label{fig:env-mod}
 \end{figure}
 
-\subsection{Envelope Detection}
+\subsection{Envelope Detection Using Hilbert Transform}
+%todo: 讨论Hilbert在现实中应该如何实现，为什么这里用Hilbert而不是LPF，二者区别？
+%? Hilbert能否在现实中实现？如果能，是如何避免下面那个问题的？
+%? 用LPF，会留下fc-bw到fc之间的频谱，但我们的lpf不理想，会把f>fc的部分频谱也留下
 Diverging from coherent detection, envelope detection dispenses with the necessity of multiplying the received signal by the carrier wave. Instead, the received signal undergoes filtration by a Band Pass Filter (BPF) to eliminate noise beyond the desired bandwidth, and subsequently, an envelope detector facilitates the recovery of the message signal. This procedural sequence is depicted in Figure \ref{fig:env-demod}.
 
-In physical circuitry, the envelope detector typically comprises a diode and an LPF \cite{AnalogCommunicationAM}. However, in Python, this functionality is realized through a Hilbert transform process \cite{ulrichEnvelopeCalculationHilbert2006, XiXiaoShengPythonTiQuXinHaoDeBaoLuoGet2023}.
+In physical circuitry, the envelope detector typically comprises a diode and an LPF \cite{AnalogCommunicationAM}. While this is also applicable in Python using a digital LPF, such functionality is also available by applying a Hilbert Transformation process \cite{ulrichEnvelopeCalculationHilbert2006, XiXiaoShengPythonTiQuXinHaoDeBaoLuoGet2023}.
 
 Consider a single-tone sinusoidal signal with frequency $f_m$ modulated by a carrier wave with frequency $f_c$. The modulated wave, denoted as $g(t)$, is expressed as
 \begin{equation}
-    g(t) = \sin(2\pi f_c t)\sin(2\pi f_m t)
+    g(t) = \sin\left(2\pi f_c t\right)\sin\left(2\pi f_m t\right)
 \end{equation}
 where $f_c\gg f_m$. By trigonometric identity, $g(t)$ can be alternatively expressed as
 \begin{equation}
-    g(t)=-\frac{1}{2}\{\cos\mathrm[2\pi (f_c+f_m)t]-\cos[2\pi (f_c-f_m)t]\}.
+    g(t)=-\frac{1}{2}\{\cos\left[2\pi \left(f_c+f_m\right)t\right]-\cos\left[2\pi \left(f_c-f_m\right)t\right]\}.
 \end{equation}
 
 The Hilbert transform introduces a $-\frac{\pi}{2}$ to the phase of the signal, which yields
 \begin{equation}
     \begin{aligned}
-        \tilde{g}(t)&=-\frac{1}{2}\left\lbrace\cos\left[2\pi (f_c+f_m)t - \frac{\pi}{2}\right]-\cos\left[2\pi (f_c-f_m)t - \frac{\pi}{2}\right]\right\rbrace\\
-        &=-\frac{1}{2}\left\{ \sin\left( 2\pi f_ct-\frac{\pi}{2} \right) \sin\left( 2\pi f_mt \right) \right\} \\
-                    &=-\frac{1}{2}\cos\left( 2\pi f_ct \right) \sin\left( 2\pi f_mt \right) 
+        \tilde{g}(t) & =-\frac{1}{2}\left\lbrace\cos\left[2\pi (f_c+f_m)t - \frac{\pi}{2}\right]-\cos\left[2\pi (f_c-f_m)t - \frac{\pi}{2}\right]\right\rbrace \\
+                     & =-\frac{1}{2}\left\{ \sin\left( 2\pi f_ct-\frac{\pi}{2} \right) \sin\left( 2\pi f_mt \right) \right\}                                   \\
+                     & =-\frac{1}{2}\cos\left( 2\pi f_ct \right) \sin\left( 2\pi f_mt \right)
     \end{aligned}
 \end{equation}
 
@@ -106,29 +168,30 @@ where $\tilde{s}(t)$ is the Hilbert transform of $s(t)$.
 
 This methodology is applied by the team in the project.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
     \centering
     \includegraphics[width=\linewidth]{plots/env-demod.pdf}
-    \caption{Block diagram illustrating the process of envelope demodulation.}
+    \caption{The envelope demodulation process. (a) The block diagram of the demodulation process. (b) The spectrum of the received noisy signal $s^\prime (t)$. (c) The spectrum of the band-pass filtered signal $x(t)$. (d) The spectrum of envelope detected signal $y(t)$.}
     \label{fig:env-demod}
 \end{figure}
 
 \subsection{SNR Calculation and Measurement}
-\subsubsection{Pre-Detection SNR}
 As is stated in \textcite[Eq. (9.26)]{haykinIntroductionAnalogDigital2007}, the theoretical pre-detection SNR in an envelope modulation receiver can be calculated by
 \begin{equation}
-  \SNR_{\text{pre, theoretical}}^{\text{AM}} = \frac{A_c^2 (1+k_a^2)P}{2N_0 B_T}
+    \SNR_{\text{pre, theoretical}}^{\text{AM}} = \frac{A_c^2 (1+k_a^2)P}{2N_0 B_T}
 \end{equation}
 where $A_c$ is the carrier amplitude, $k_a$ is the modulation sensitivity, $P$ is the power of message signal, $N_0$ is twice the power spectral density of white noise and $B_T$ is the noise bandwidth of the BPF.
 
+The actual pre-detection SNR can be obtained by measuring the power of the obtained signal and that of noise. Since the filtering process will filter both the useful signal and the noise, the SNR calculation cannot simply apply the specified noise power used in AWGN generation. Instead, there are two ways of measuring the noise in this simulation:
+\begin{enumerate}
+    \item Calculating as the power of difference between the resulting signal under an ideal channel and that under a noisy channel.
+    \item Calculating the power of noise that passes all the filters.
+\end{enumerate}
+
 Following the notation in Figure \ref{fig:env-demod}, the actual pre-detection SNR can be measured as
 \begin{equation}
-    \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x(t)]}{\text{noise power}}.
+    \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x^2(t)]}{\text{noise power}}.
 \end{equation}
-
-%todo：如何测量噪声？What exactly is ``noise power''??
-
-\subsubsection{Post-Detection SNR}
 
 The textbook \cite[Eq. (9.23)]{haykinIntroductionAnalogDigital2007} states that the theoretical post-detection SNR in an envelope modulation receiver is expressed as
 \begin{equation}
@@ -138,20 +201,18 @@ which is a valid approximation only for high SNR and $0<k_a<100\%$.
 
 The actual post-detection SNR can be expressed as, if following the notation in Figure \ref{fig:env-demod},
 \begin{equation}
-    \SNR_{\text{post, measured}}^{\text{AM}} = \frac{\E[y(t)]}{\text{noise power}}.
+    \SNR_{\text{post, measured}}^{\text{AM}} = \frac{\E[r^2(t)]}{\E\left[ \left[ r\left(t\right) - m\left(t\right) \right]^2 \right]}.
 \end{equation}
 
-%todo：如何测量噪声
-
-\subsubsection{Relation between Pre- and Post-Detection SNRs}
 %todo：考虑是否要找一下在高pre-detection SNR和低pre-detection SNR的情况下post-detection分别是什么关系，
 %todo：书上有图9.12
 到底是什么relation呢？小编也不知道，欢迎大家在评论区留言
 
 \section{FM Simulation}
 \subsection{Narrow-Band FM Modulation}
-The textbook \cite[Sec. 4.1]{haykinIntroductionAnalogDigital2007} states that the message signal $m(t)$ will be phase-modulated with a carrier signal $A_c \cos(2\pi f_c t)$, which obtains the frequency modulated wave
+The textbook \cite[Sec. 4.1]{haykinIntroductionAnalogDigital2007} states that the message signal $m(t)$ will be phase-modulated with a carrier signal $A_c \cos\left(2\pi f_c t\right)$, which obtains the frequency modulated wave
 \begin{equation}
+    \label{eq:fm_modulated}
     s(t) = A_c \cos\left[ 2\pi f_c t + 2\pi k_f \int_0^{t} m(\tau) \D\tau \right]
 \end{equation}
 where the instantaneous frequency is
@@ -162,8 +223,9 @@ Here $k_f$ denotes the modulation sensitivity which determines the frequency dev
 \begin{equation}
     \Delta f = k_f A_m.
 \end{equation}
+%todo: 加上FM调制后的频谱图（应该是fc为中心，两边各延伸，范围=deviation）
 
-By Carson's rule, \cites[Sec. 4.6]{haykinIntroductionAnalogDigital2007}{CarsonRule2017}, the transmission bandwidth of an FM wave for a single-tone modulating wave is estimated as
+By Carson's rule \cites[Sec. 4.6]{haykinIntroductionAnalogDigital2007}{CarsonRule2017}, the transmission bandwidth of an FM wave for a frequency-modulated signal is estimated as
 \begin{equation}
     B_T = 2\Delta f + 2f_{m,\mathrm{max}}
 \end{equation}
@@ -176,7 +238,7 @@ In this project, the modulation index is specified as $\beta=0.3$.
 Such modulation can be done using a direct method \cite[Sec. 4.7]{haykinIntroductionAnalogDigital2007}, where the frequency modulator contains an oscillator directly controllable by the message signal. Figure \ref{fig:fm-mod} illustrates this process: the message signal is taken integral and sent to the controllable oscillator to produce a phase-variant signal, which is the modulated wave.
 
 
-\begin{figure}[htb]
+\begin{figure}[tb]
     \centering
     \includegraphics[scale=0.6]{plots/fm_mod.pdf}
     \caption{The direct method of narrow-band FM modulation.}
@@ -185,46 +247,84 @@ Such modulation can be done using a direct method \cite[Sec. 4.7]{haykinIntroduc
 
 
 \subsection{Narrow-Band FM Demodulation}
-~
+The key to FM demodulation is to extract the phase of the received signal. Considering an ideal channel, the received signal should equal the modulated signal $s(t)$ in Eq. \eqref{eq:fm_modulated}. Taking the derivative of $s(t)$ yields
+\begin{equation}
+    \nu \left( t \right) =\frac{\mathrm{d}}{\mathrm{d}t}s\left( t \right) =-A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right] \sin \left[ 2\pi f_ct+2\pi k_f\int_0^t{m\left( \tau \right) \mathrm{d}\tau} \right].
+\end{equation}
+
+An envelope detector could remove the sinusoidal term, which obtains
+\begin{equation}
+    y\left( t \right) = -A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right]
+\end{equation}
+which only contains the scaled version of $m(t)$ and some DC offset. Hence by applying a DC blocking circuit and a proper gain to $y(t)$, the message signal can be concluded.
+
+In practice where the channel is noisy, a BPF will be applied before differentiating and an LPF will be applied before concluding the output, both of which suppress noise introduced by the channel. The complete demodulation process is shown in Figure \ref{fig:fm-demod}.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[scale=0.7]{plots/fm_demod.pdf}
+    \caption{The demodulation process of frequency-modulated signals.}
+    \label{fig:fm-demod}
+\end{figure}
+
 \subsection{SNR Calculation and Measurement}
-~
+As discussed in \cite[Sec. 9.7]{haykinIntroductionAnalogDigital2007}, the theoretical pre- and post-detection SNR is expressed as
+\begin{align}
+    \SNR_{\text{pre, theoretical}}^{\text{FM}} &= \frac{A_c^2}{2N_0B_T}\\
+    \SNR_{\text{post, theoretical}}^{\text{FM}} &= \frac{3A_c^2 k_f^2 P}{2N_0 W}
+\end{align}
+where $P$ is the power of the message signal, $B_T$ is the noise bandwidth of the BPF, and $W$ is the message bandwidth. %? Relationship between B_T and W, is B_T = W?
+
+The actual SNRs can be calculated by measuring the power of the signal and noise, which can be concluded as
+\begin{align}
+    \SNR_{\text{pre, measured}}^{\text{FM}} &= \frac{\E\left[x^2\left(t\right)\right]}{\text{noise power}}\\
+    \SNR_{\text{post, measured}}^{\text{FM}} &= \frac{\E[r^2(t)]}{\E\left[ \left[ r\left(t\right) - m\left(t\right) \right]^2 \right]}.
+\end{align}
 
 \section{Filter Design}
 \subsection{Ideal Filters}
-%todo 讲LPF和BPF的TF，然后引出为什么ideal filter无法实现，再引出butterworth
-~
+The filters remove the unnecessary frequency components of its input signals. Figure \ref{fig:ideal-filter} shows the impulse response of an ideal LPF and BPF.
+
+The expressions for ideal LPF and BPF in the frequency domain are
+\begin{align}
+    H_{LPF}\left(f\right) &= \rect\left( \frac{f}{2f_{cut}} \right) \\
+    H_{BPF}\left(f\right) &= \rect\left( \frac{f-f_{cut}}{2f_{cut}} \right) + \rect\left( \frac{f+f_{cut}}{2f_{cut}} \right)
+\end{align}
+By inverse Fourier transformation, their time-domain impulse response can be obtained as
+\begin{align}
+    h_{LPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right) \\
+    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t}
+\end{align}
+which contains non-periodic and infinitely expanding $\sinc$ terms. This indicates the impulse response to be associated with the future input, which violates the causality. Thus the ideal LPF and BPF are not causal and are not physically implementable.
+
+\begin{figure}[b]
+    \centering
+    \includegraphics[scale=0.4]{plots/ideal-filters.pdf}
+    \caption{The impulse response of ideal LPF and BPF. (a) The impulse response of an ideal LPF. $W_{LPF}$ shows the bandwidth of the LPF. (b) The impulse response of an ideal BPF. $W_{BPF}$ shows the bandwidth of the BPF.}
+    \label{fig:ideal-filter}
+\end{figure}
+
 \subsection{Butterworth Filter in Python}
 
 Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth LPF and BPF with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
 
 In the digital realm, Python facilitates the implementation of filters as digital IIR filters, with each filter in the $z$-domain expressed as the quotient of two polynomials:
 \begin{equation}
-H_{\text{filter}}(z) = \frac{\sum_{p=0}^{n}{a_pz^{-p}}}{\sum_{q=0}^{n}{b_qz^{-q}}}
+    H_{\text{digital}}(z) = \frac{\sum_{p=0}^{n}{a_pz^{-p}}}{\sum_{q=0}^{n}{b_qz^{-q}}}.
 \end{equation}
 
 The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as documented by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}.
 
-\begin{figure}[htb]
+\begin{figure}[tb]
     \centering
     \includegraphics[scale=.6]{plots/butterworth-lpf-nolog.pdf}
     \caption{The frequency response of a Butterworth LPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$.}
     \label{fig:butter-lpf}
 \end{figure}
-\begin{figure}[htb]
+\begin{figure}[tb]
     \centering
     \includegraphics[scale=.6]{plots/butterworth-bpf-nolog.pdf}
     \caption{The frequency response of a Butterworth BPF with pass-band from \SI{100}{Hz} to \SI{200}{Hz}.}
     \label{fig:butter-bpf}
 \end{figure}
-
-\section{Issues about Digital Filters}
-% difference between digital and analog, what error will be brought
-% how to compensate? --> 加长信号
-
-（1）Inside the computer signals cannot be processed as the way they should be in a real analog circuit. As is mentioned above, all filters the team applied are digital filters, and all spectrums are obtained by Fast Fourier Transformation (FFT) algorithms. 过低的采样率会导致频谱分辨率过低，导致无法正确reconstruct原信号。根据\textcite[Sec. 7.3.3]{manolakisAppliedDigitalSignal2011}，可以使用Zero-Padding来提高采样点数？
-
-（2）究竟是FFT导致的时域信号出现起始、末尾的波动，还是Digital Filter导致的？
-
-解决方案：在信号前后增加时长，处理后重新截掉无用部分
 
 \end{document}
