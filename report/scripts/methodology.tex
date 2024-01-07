@@ -16,7 +16,7 @@ The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicit
 The utilization of a TTS-generated male voice recording, on the other hand, introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context. Such recording has no background noise between words, which enables the team to better observe the distortion by the simulated noise process. The signal is plotted as Figure \ref{fig:audio-time}.
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.5\linewidth]{plots/audio_time.png}
+    \includegraphics[width=0.7\linewidth]{plots/audio_time.png}
     \caption{The waveform of the TTS-generated recording.}
     \label{fig:audio-time}
 \end{figure}
@@ -56,8 +56,8 @@ The bandwidth of the TTS-generated recording can be determined by its spectrum. 
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.49\linewidth]{plots/audio_spectrum.png}
-    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum_8khz.png}
-    \caption{The spectrum of the audio recording. (a) The total spectrum. (b) The spectrum within \SI{8}{kHz}.}
+    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum_2khz.png}
+    \caption{The spectrum of the audio recording. (a) The total spectrum. (b) The spectrum within \SI{2}{kHz}.}
     \label{fig:audio-spectrum}
 \end{figure}
 
@@ -76,20 +76,13 @@ The power spectrum of a white noise process is shown in Figure \ref{fig:white-no
     \label{fig:white-noise-spectrum}
 \end{figure}
 
-In this project, the AWGN process will be simulated using \verb|numpy.random.normal()| function. Figures \ref{fig:gaussian-noise-time} and \ref{fig:gaussian-noise-freq} show a Python-generated Gaussian noise process and its frequency spectrum.
+In this project, the AWGN process will be simulated using \verb|numpy.random.normal()| function. Figure \ref{fig:gaussian-noise} shows a Python-generated Gaussian noise process and its frequency spectrum.
 \begin{figure}[tb]
-    \begin{minipage}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{plots/gaussian_noise.png}
-        \caption{The waveform of Gaussian noise. Note that the mean of a white noise process is zero.}
-        \label{fig:gaussian-noise-time}
-    \end{minipage}
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{plots/gaussian_noise_spectrum.png}
-        \caption{The spectrum of Gaussian noise.}
-        \label{fig:gaussian-noise-freq}
-    \end{minipage}
+        \includegraphics[width=0.7\linewidth]{plots/gaussian_noise.png}
+        \includegraphics[width=0.7\linewidth]{plots/gaussian_noise_spectrum.png}
+        \caption{The Python-generated Gaussian process $\mathrm{N}\left[\mu = 0, \sigma^2 = 1\right]$ and its spectrum.}
+        \label{fig:gaussian-noise}
 \end{figure}
 
 
@@ -100,7 +93,7 @@ Consider a message signal $m\left(t\right)$ and carrier wave $A_c \cos\left(2\pi
 \begin{equation}
     s\left(t\right) = A_c \left[1 + k_a m\left(t\right)\right] \cos \left(2\pi f_c t + \phi\right)
 \end{equation}
-In this expression, $k_a$ denotes the modulation sensitivity, $A_c$ corresponds to the amplitude of the carrier wave, and $f_c$ represents the frequency of the carrier wave. It is imperative to ensure that the carrier wave frequency $f_c$ significantly surpasses the highest frequency component, denoted as $W$, of the message signal $m\left(t\right)$ to prevent aliasing. This condition can be expressed as $f_c \gg W$. Moreover, the choice of the modulation sensitivity, $k_a$, needs to adhere to the constraint which is crucial to prevent envelope distortion, as outlined by \textcite[pp. 101-102]{haykinIntroductionAnalogDigital2007}:
+In this expression, $k_a$ denotes the modulation sensitivity, $A_c$ corresponds to the amplitude of the carrier wave, and $f_c$ represents the frequency of the carrier wave. It is imperative to ensure that the carrier wave frequency $f_c$ significantly surpasses the highest frequency component, denoted as $W$, of the message signal $m\left(t\right)$ to prevent aliasing. This condition can be expressed as $f_c \gg W$. Moreover, the choice of the modulation sensitivity, $k_a$, needs to adhere to the constraint which is crucial to prevent envelope distortion, as outlined by \textcite[pp. 101--102]{haykinIntroductionAnalogDigital2007}:
 \begin{equation}
     \left| k_a m\left(t\right) \right| < 1, \quad \text{for all }t.
 \end{equation}
@@ -123,56 +116,38 @@ The implementation of amplitude modulation can be illustrated through the block 
     \label{fig:env-mod}
 \end{figure}
 
-\subsection{Envelope Detection Using Hilbert Transform}
-%todo: 讨论Hilbert在现实中应该如何实现，为什么这里用Hilbert而不是LPF，二者区别？
-%? Hilbert能否在现实中实现？如果能，是如何避免下面那个问题的？
-%? 用LPF，会留下fc-bw到fc之间的频谱，但我们的lpf不理想，会把f>fc的部分频谱也留下
+\subsection{Envelope Detection}
 Diverging from coherent detection, envelope detection dispenses with the necessity of multiplying the received signal by the carrier wave. Instead, the received signal undergoes filtration by a Band Pass Filter (BPF) to eliminate noise beyond the desired bandwidth, and subsequently, an envelope detector facilitates the recovery of the message signal. This procedural sequence is depicted in Figure \ref{fig:env-demod}.
-
-In physical circuitry, the envelope detector typically comprises a diode and an LPF \cite{AnalogCommunicationAM}. While this is also applicable in Python using a digital LPF, such functionality is also available by applying a Hilbert Transformation process \cite{ulrichEnvelopeCalculationHilbert2006, XiXiaoShengPythonTiQuXinHaoDeBaoLuoGet2023}.
-
-Consider a single-tone sinusoidal signal with frequency $f_m$ modulated by a carrier wave with frequency $f_c$. The modulated wave, denoted as $g(t)$, is expressed as
-\begin{equation}
-    g(t) = \sin\left(2\pi f_c t\right)\sin\left(2\pi f_m t\right)
-\end{equation}
-where $f_c\gg f_m$. By trigonometric identity, $g(t)$ can be alternatively expressed as
-\begin{equation}
-    g(t)=-\frac{1}{2}\{\cos\left[2\pi \left(f_c+f_m\right)t\right]-\cos\left[2\pi \left(f_c-f_m\right)t\right]\}.
-\end{equation}
-
-The Hilbert transform introduces a $-\frac{\pi}{2}$ to the phase of the signal, which yields
-\begin{equation}
-    \begin{aligned}
-        \tilde{g}(t) & =-\frac{1}{2}\left\lbrace\cos\left[2\pi (f_c+f_m)t - \frac{\pi}{2}\right]-\cos\left[2\pi (f_c-f_m)t - \frac{\pi}{2}\right]\right\rbrace \\
-                     & =-\frac{1}{2}\left\{ \sin\left( 2\pi f_ct-\frac{\pi}{2} \right) \sin\left( 2\pi f_mt \right) \right\}                                   \\
-                     & =-\frac{1}{2}\cos\left( 2\pi f_ct \right) \sin\left( 2\pi f_mt \right)
-    \end{aligned}
-\end{equation}
-
-The analytic signal of $g(t)$, denoted as $\aleph\{g(t)\}$, can be expressed as a combination of $g(t)$ and its Hilbert transform $\tilde{g}(t)$, which is
-\begin{equation}
-    \aleph\{g(t)\} = g(t) + j\tilde{g}(t) = \sin(2\pi f_c t)\sin(2\pi f_m t) - j\cos(2\pi f_c t)\sin(2\pi f_m t).
-\end{equation}
-
-The magnitude of the analytic signal can be calculated by
-\begin{equation}
-    \left| \aleph\{g(t)\}\right| = \sqrt{\aleph\{g(t)\}\aleph^*\{g(t)\}} = \left| \sin(2\pi f_m t)\right|
-\end{equation}
-which precisely equals to the original $g(t)$.
-
-Thus, the envelope of an envelope-modulated signal can be derived by calculating the magnitude of the Hilbert transform of the signal,
-\begin{equation}
-    \text{envelop of $s(t)$} = \left| \tilde{s}(t) \right|
-\end{equation}
-where $\tilde{s}(t)$ is the Hilbert transform of $s(t)$.
-
-This methodology is applied by the team in the project.
-
 \begin{figure}[tb]
     \centering
     \includegraphics[width=\linewidth]{plots/env-demod.pdf}
     \caption{The envelope demodulation process. (a) The block diagram of the demodulation process. (b) The spectrum of the received noisy signal $s^\prime (t)$. (c) The spectrum of the band-pass filtered signal $x(t)$. (d) The spectrum of envelope detected signal $y(t)$.}
     \label{fig:env-demod}
+\end{figure}
+
+A common way to build the envelope detector in Python is to apply Hilbert transform \cite{ulrichEnvelopeCalculationHilbert2006, XiXiaoShengPythonTiQuXinHaoDeBaoLuoGet2023}. The envelope of an envelope-modulated signal $s\left(t\right)$ can be derived by calculating the magnitude of the Hilbert transform of the signal,
+\begin{equation}
+    \text{envelop of $s\left(t\right)$} = \left| \tilde{s}\left(t\right) \right|
+\end{equation}
+where $\tilde{s}(t)$ is the Hilbert transform of $s\left(t\right)$.
+
+However, as is mentioned in \cite[p. 428]{kudekiAnalogSignalsSystems2009}, the Hilbert Transform is not a causal process, so is not able to be realized using analog circuits. Instead, in physical circuitry, the envelope detector typically comprises a diode and an LPF \cite{AnalogCommunicationAM}.
+
+Figure \ref{fig:envelope} illustrates a typical diode detector circuit with a full-wave rectifier. 
+
+% See: p.11 of ece459 txtbook
+\cite[pp. 111--112]{haykinIntroductionAnalogDigital2007}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[scale=1.8]{plots/diode_detector.pdf}
+    \caption{The diode detector. (a) The circuit of the typical diode detector. (b) The block diagram of the diode detector.}
+    \label{fig:envelope}
+\end{figure}
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{plots/envelope_ripple.png}
+    \caption{Ripple and peak clipping effects. \cite[Fig. 9.3]{lesurfEnvelopeDetector}}
 \end{figure}
 
 \subsection{SNR Calculation and Measurement}
@@ -298,7 +273,7 @@ which contains non-periodic and infinitely expanding $\sinc$ terms. This indicat
 
 \begin{figure}[b]
     \centering
-    \includegraphics[scale=0.4]{plots/ideal-filters.pdf}
+    \includegraphics[scale=0.6]{plots/ideal-filters.pdf}
     \caption{The impulse response of ideal LPF and BPF. (a) The impulse response of an ideal LPF. $W_{LPF}$ shows the bandwidth of the LPF. (b) The impulse response of an ideal BPF. $W_{BPF}$ shows the bandwidth of the BPF.}
     \label{fig:ideal-filter}
 \end{figure}
