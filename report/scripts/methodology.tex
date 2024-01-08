@@ -64,6 +64,12 @@ The bandwidth of the TTS-generated recording can be determined by its spectrum. 
 \section{Additive White Gaussian Noise}
 Additive White Gaussian Noise (AWGN) refers to a Gaussian process that can be directly added to a signal to approximate a noise-distorted signal in a real-life communication channel.
 
+A Gaussian process denoted as $\mathrm{N}\left[ \mu, \sigma^2 \right]$ has the probability density function as
+\begin{equation}
+    f_{Gaussian}\left(u\right) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left[ -\frac{\left(u-v\right)^2}{2\sigma^2} \right].
+\end{equation}
+It has mean $\mu$ and standard deviation $\sigma^2$.
+
 According to \cite[Sec. 8.10]{haykinIntroductionAnalogDigital2007}, a noise process is called white noise if it has zero-mean and its power spectral density satisfies
 \begin{equation}
     S_W\left(f\right) = \frac{N_0}{2}.
@@ -102,7 +108,7 @@ The product of modulation sensitivity $k_a$ and amplitude of message signal $A_m
 \begin{equation}
     \mu = k_a A_m
 \end{equation}
-is called the modulation factor, or as stated by \cite{sasmitaModulationIndexModulation2020}, the \textit{modulation index}, which can be alternatively expressed as
+is called the modulation factor, or as stated by \cite{sasmitaModulationIndexModulation2020}, the modulation index, which can be alternatively expressed as
 \begin{equation}
     \mu = \frac{A_m}{A_c}.
 \end{equation}
@@ -133,10 +139,12 @@ where $\tilde{s}(t)$ is the Hilbert transform of $s\left(t\right)$.
 
 However, as is mentioned in \cite[p. 428]{kudekiAnalogSignalsSystems2009}, the Hilbert Transform is not a causal process, so is not able to be realized using analog circuits. Instead, in physical circuitry, the envelope detector typically comprises a diode and an LPF \cite{AnalogCommunicationAM}.
 
-Figure \ref{fig:envelope} illustrates a typical diode detector circuit with a full-wave rectifier. 
+Figure \ref{fig:envelope} illustrates a typical diode detector circuit with a full-wave rectifier. As is discussed in \cite[pp. 111--112]{haykinIntroductionAnalogDigital2007}, on the positive segment of the signal, the diode is forward-biased and the capacitor is charged quickly. On the negative segment, the diode becomes reverse-biased and the capacitor discharges slowly through the resistor. When the input signal is greater than the output signal, the capacitor charges again; when the input signal is smaller, the capacitor discharges. In this way, the RC circuit can filter out the high-frequency carrier wave component and approximate the message signal. The time constant of the RC filter, $\tau=RC$, should satisfy
+\begin{equation}
+    RC\ll \frac{1}{f_c}.
+\end{equation}
 
-% See: p.11 of ece459 txtbook
-\cite[pp. 111--112]{haykinIntroductionAnalogDigital2007}
+The charging and discharging process is visualized in Figure \ref{fig:rc-ripple} which takes a square wave as an example message signal. The output from the envelope detector is a series of saw-tooth wave that approximates the input square-wave message signal.
 
 \begin{figure}[tb]
     \centering
@@ -146,8 +154,9 @@ Figure \ref{fig:envelope} illustrates a typical diode detector circuit with a fu
 \end{figure}
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=0.6\linewidth]{plots/envelope_ripple.png}
-    \caption{Ripple and peak clipping effects. \cite[Fig. 9.3]{lesurfEnvelopeDetector}}
+    \includegraphics[width=0.7\linewidth]{plots/envelope_ripple.png}
+    \caption{Ripple and peak clipping effects \cite[Fig. 9.3]{lesurfEnvelopeDetector}. (a)}
+    \label{fig:rc-ripple}
 \end{figure}
 
 \subsection{SNR Calculation and Measurement}
@@ -165,7 +174,7 @@ The actual pre-detection SNR can be obtained by measuring the power of the obtai
 
 Following the notation in Figure \ref{fig:env-demod}, the actual pre-detection SNR can be measured as
 \begin{equation}
-    \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x^2(t)]}{\text{noise power}}.
+    \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x^2(t)]}{\text{filter noise power}}.
 \end{equation}
 
 The textbook \cite[Eq. (9.23)]{haykinIntroductionAnalogDigital2007} states that the theoretical post-detection SNR in an envelope modulation receiver is expressed as
@@ -181,7 +190,6 @@ The actual post-detection SNR can be expressed as, if following the notation in 
 
 %todo：考虑是否要找一下在高pre-detection SNR和低pre-detection SNR的情况下post-detection分别是什么关系，
 %todo：书上有图9.12
-到底是什么relation呢？小编也不知道，欢迎大家在评论区留言
 
 \section{FM Simulation}
 \subsection{Narrow-Band FM Modulation}
@@ -226,8 +234,7 @@ The key to FM demodulation is to extract the phase of the received signal. Consi
 \begin{equation}
     \nu \left( t \right) =\frac{\mathrm{d}}{\mathrm{d}t}s\left( t \right) =-A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right] \sin \left[ 2\pi f_ct+2\pi k_f\int_0^t{m\left( \tau \right) \mathrm{d}\tau} \right].
 \end{equation}
-
-An envelope detector could remove the sinusoidal term, which obtains
+An envelope detector could remove the sinusoidal term and get
 \begin{equation}
     y\left( t \right) = -A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right]
 \end{equation}
@@ -247,11 +254,11 @@ As discussed in \cite[Sec. 9.7]{haykinIntroductionAnalogDigital2007}, the theore
     \SNR_{\text{pre, theoretical}}^{\text{FM}} &= \frac{A_c^2}{2N_0B_T}\\
     \SNR_{\text{post, theoretical}}^{\text{FM}} &= \frac{3A_c^2 k_f^2 P}{2N_0 W}
 \end{align}
-where $P$ is the power of the message signal, $B_T$ is the noise bandwidth of the BPF, and $W$ is the message bandwidth. %? Relationship between B_T and W, is B_T = W?
+where $P$ is the power of the message signal, $B_T$ is the noise bandwidth of the BPF, and $W$ is the message bandwidth. %? Relationship between B_T and W, is B_T = W? 是不是写反了
 
 The actual SNRs can be calculated by measuring the power of the signal and noise, which can be concluded as
 \begin{align}
-    \SNR_{\text{pre, measured}}^{\text{FM}} &= \frac{\E\left[x^2\left(t\right)\right]}{\text{noise power}}\\
+    \SNR_{\text{pre, measured}}^{\text{FM}} &= \frac{\E\left[x^2\left(t\right)\right]}{\text{filter noise power}}\\
     \SNR_{\text{post, measured}}^{\text{FM}} &= \frac{\E[r^2(t)]}{\E\left[ \left[ r\left(t\right) - m\left(t\right) \right]^2 \right]}.
 \end{align}
 
@@ -267,7 +274,7 @@ The expressions for ideal LPF and BPF in the frequency domain are
 By inverse Fourier transformation, their time-domain impulse response can be obtained as
 \begin{align}
     h_{LPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right) \\
-    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t}
+    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t} - 2f_{cut}\sinc\left(-2f_{cut} t\right)\e^{-j2\pi f_{cut} t}
 \end{align}
 which contains non-periodic and infinitely expanding $\sinc$ terms. This indicates the impulse response to be associated with the future input, which violates the causality. Thus the ideal LPF and BPF are not causal and are not physically implementable.
 
@@ -280,7 +287,11 @@ which contains non-periodic and infinitely expanding $\sinc$ terms. This indicat
 
 \subsection{Butterworth Filter in Python}
 
-Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth LPF and BPF with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
+Both Amplitude Modulation (AM) and Frequency Modulation (FM) communication systems necessitate the incorporation of filters. In practical scenarios, however, the realization of ideal filters poses inherent challenges. Nevertheless, the Butterworth Filter exhibits characteristics closely approximating those of an ideal filter. Figure \ref{fig:butter-ckt} illustrates an analog circuit design of a first-order Butterworth LPF which is composed of an operational amplifier. According to \cite{ButterworthFilterWhat2021}, the general $n$-th order Butterworth LPF has a transfer function
+\begin{equation}
+    H_{n}\left( j\omega \right) =\frac{1}{\sqrt{1+\epsilon ^2\left( \frac{\omega}{\omega _c} \right) ^{2n}}}
+\end{equation}
+where $\epsilon$ is the maximum pass-band gain and $\omega_c$ is the cut-off frequency. Figures \ref{fig:butter-lpf} and \ref{fig:butter-bpf} depict the frequency responses of Butterworth LPF and BPF with varying orders, illustrating that an increased order ($n$) results in a more pronounced roll-off slope. As expounded by \cite{storrButterworthFilterDesign2013, kudekiAnalogSignalsSystems2009}, a Butterworth Low Pass Filter manifests a maximally flat frequency response within its passband, swiftly attenuating beyond the cut-off frequency. This advantageous attribute empowers the design of filters with minimal distortion, albeit at the expense of an indeterminate phase delay induced by the inherent properties of Infinite Impulse Response (IIR) filters.
 
 In the digital realm, Python facilitates the implementation of filters as digital IIR filters, with each filter in the $z$-domain expressed as the quotient of two polynomials:
 \begin{equation}
@@ -289,6 +300,12 @@ In the digital realm, Python facilitates the implementation of filters as digita
 
 The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as documented by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}.
 
+\begin{figure}[tb]
+    \centering
+    \includegraphics[scale=.5]{plots/1order_butterLPF.png}
+    \caption{A first-order Butterworth LPF circuit \cite{ButterworthFilterWhat2021}.}
+    \label{fig:butter-ckt}
+\end{figure}
 \begin{figure}[tb]
     \centering
     \includegraphics[scale=.6]{plots/butterworth-lpf-nolog.pdf}
