@@ -1,5 +1,33 @@
 \documentclass[../ECE459FinalProjectReport.tex]{subfiles}
 
 \begin{document}
-\chapter{Results and Discussion}
+\chapter{Results}
+\section{Experiment Settings}
+%todo: 写实验所使用的信号及表达式、载波参数、调制系数等等
+Both the experiment apply two signals -- the multi-tone sinusoidal signal, and the male voice recording. The parameters applied in AM simulation are shown in Table \ref{tb:AM-param}.
+\begin{table}[tb]
+    \centering
+    \caption{Parameters for AM Simulation}
+    \label{tb:AM-param}
+    \begin{tabular}{@{}r|c|c@{}}
+        \toprule
+                                     & Multi-tone Sinusoidal & Male Voice Recording \\\midrule
+        Carrier Wave Frequency $fc$  & \SI{12}{kHz}          & \SI{12}{kHz}         \\
+        Carrier Wave Amplitude $A_c$ & 1                     & 1                    \\
+        Modulation Index $\mu$       & 0.3                   & 0.3                  \\
+        Modulation Sensitivity $k_a$ &                       & \num{1.83e-5}        \\
+        Sampling Rate $f_s$          & \SI{48}{kHz}          & \SI{48}{kHz}         \\
+        %todo 解释为何AM不需要上采样--BW小，FM的TX BW比信息BW大一些
+        Bandwidth $B_W$              & \SI{0}{kHz}          & approx. \SI{5}{kHz}\\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{AM Simulation}
+%todo: 每一个环节的
+
+\section{FM Simulation}
+
+\section{Discussion}
+%todo 讨论一下
+
 \end{document}

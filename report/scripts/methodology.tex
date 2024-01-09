@@ -52,7 +52,7 @@ Hence the spectrum of $\gamma\left(t\right)$ should be similar to Figure \ref{fi
     \label{fig:multi-tone-spectrum}
 \end{figure}
 
-The bandwidth of the TTS-generated recording can be determined by its spectrum. Note that the recording is generated using the male's voice, which typically ranges from \SI{80}{Hz} to \SI{200}{\Hz}. The spectrum of the recording is plotted as Figure \ref{fig:audio-spectrum}, where it is observed that the majority of power is concentrated within \SI{1}{kHz}. This is an important guidance for determining the cut-off frequency of the LPFs we used in the project.
+The bandwidth of the TTS-generated recording can be determined by its spectrum. Note that the recording is generated using the male's voice, which typically ranges from \SI{80}{Hz} to \SI{200}{\Hz}. The spectrum of the recording is plotted as Figure \ref{fig:audio-spectrum}, where it is observed that the majority of power is concentrated within \SI{1}{kHz}. This is an important guidance for determining the cut-off frequency of the LPFs we used in the project. In the following simulation, \SI{5}{kHz} will be regarded as the bandwidth of the male voice recording to preserve the audio quality.
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.49\linewidth]{plots/audio_spectrum.png}
@@ -74,7 +74,7 @@ According to \cite[Sec. 8.10]{haykinIntroductionAnalogDigital2007}, a noise proc
 \begin{equation}
     S_W\left(f\right) = \frac{N_0}{2}.
 \end{equation}
-The power spectrum of a white noise process is shown in Figure \ref{fig:white-noise-spectrum}.
+The power spectrum of a Python-generated white Gaussian noise process is shown in Figure \ref{fig:white-noise-spectrum}.
 \begin{figure}[tb]
     \centering
     \includegraphics[scale=0.35]{plots/white-noise-power-spectrum.pdf}
