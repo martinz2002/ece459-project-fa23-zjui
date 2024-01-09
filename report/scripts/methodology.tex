@@ -196,11 +196,11 @@ The actual post-detection SNR can be expressed as, if following the notation in 
 The textbook \cite[Sec. 4.1]{haykinIntroductionAnalogDigital2007} states that the message signal $m(t)$ will be phase-modulated with a carrier signal $A_c \cos\left(2\pi f_c t\right)$, which obtains the frequency modulated wave
 \begin{equation}
     \label{eq:fm_modulated}
-    s(t) = A_c \cos\left[ 2\pi f_c t + 2\pi k_f \int_0^{t} m(\tau) \D\tau \right]
+    s(t) = A_c \cos\left[ 2\pi f_c t + 2\pi k_f \int_0^{t} m\left(\tau\right) \D\tau \right]
 \end{equation}
 where the instantaneous frequency is
 \begin{equation}
-    f_i(t) = f_c + k_f m(t).
+    f_i(t) = f_c + k_f m\left(t\right).
 \end{equation}
 Here $k_f$ denotes the modulation sensitivity which determines the frequency deviation by
 \begin{equation}
@@ -236,9 +236,9 @@ The key to FM demodulation is to extract the phase of the received signal. Consi
 \end{equation}
 An envelope detector could remove the sinusoidal term and get
 \begin{equation}
-    y\left( t \right) = -A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right]
+    y\left( t \right) \approx -A_c\left[ 2\pi f_c+2\pi k_fm\left( t \right) \right]
 \end{equation}
-which only contains the scaled version of $m(t)$ and some DC offset. Hence by applying a DC blocking circuit and a proper gain to $y(t)$, the message signal can be concluded.
+which is an approximation that only contains the scaled version of $m(t)$ and some DC offset. Hence by applying a DC blocking circuit and a proper gain to $y(t)$, the message signal can be concluded.
 
 In practice where the channel is noisy, a BPF will be applied before differentiating and an LPF will be applied before concluding the output, both of which suppress noise introduced by the channel. The complete demodulation process is shown in Figure \ref{fig:fm-demod}.
 \begin{figure}[tb]
@@ -274,11 +274,11 @@ The expressions for ideal LPF and BPF in the frequency domain are
 By inverse Fourier transformation, their time-domain impulse response can be obtained as
 \begin{align}
     h_{LPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right) \\
-    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t} - 2f_{cut}\sinc\left(-2f_{cut} t\right)\e^{-j2\pi f_{cut} t}
+    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t} + 2f_{cut}\sinc\left(+2f_{cut} t\right)\e^{-j2\pi f_{cut} t}
 \end{align}
 which contains non-periodic and infinitely expanding $\sinc$ terms. This indicates the impulse response to be associated with the future input, which violates the causality. Thus the ideal LPF and BPF are not causal and are not physically implementable.
 
-\begin{figure}[b]
+\begin{figure}[tb]
     \centering
     \includegraphics[scale=0.6]{plots/ideal-filters.pdf}
     \caption{The impulse response of ideal LPF and BPF. (a) The impulse response of an ideal LPF. $W_{LPF}$ shows the bandwidth of the LPF. (b) The impulse response of an ideal BPF. $W_{BPF}$ shows the bandwidth of the BPF.}
