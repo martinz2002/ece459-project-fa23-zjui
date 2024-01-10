@@ -2,4 +2,18 @@
 
 \begin{document}
 \chapter{Conclusion}
+
+In this project, the team practiced modeling and analyzing data in Python and grabbed some experience in simulating continuous-time systems with digital tools. The team had a deeper understanding of not only analog communication but also digital signal processing, which is of great significance in proceeding into digital communication in career.
+
+Analyzing the results in the previous section, the team confirms the availability of the designed simulation models of the AM and FM communication systems and verified that FM has better frequency-robustness than AM systems.
+
+The quality of the demodulated AM wave sounds better than the FM wave, yet the post-detection SNR for AM is lower than that of FM. This might be due to the distortion brought by the integrator, which does not count into the noise. Compared to AM, the FM system has two extra components, the integrator and 
+
+The team observed that by applying filters at proper positions, the noise can be effectively eliminated and the SNR can be significantly increased. The team also noted that filters can bring a significant degree of distortion, as the ideal filters are not implementable. Butterwo rth filter provides a close approximation to ideal filters, which have a flat response within the pass-band and fast rolling-off beyond the cut-off frequency. Eighth-order Butterworth filters are used the most commonly.
+
+The project verifies that pre- and post-SNRs have an almost linear relationship, especially for high pre-detection SNR. This can be concluded from intuition that the filtering process only changes the proportion of noise that passes the systems, hence the ratio of pre- and post-detection SNRs should be almost constant. Theoretical computation in the textbook \cite[Sec. 9.6 \& 9.7]{haykinIntroductionAnalogDigital2007}
+also shows such approximate linearity.
+
+The project still has some space for improvement. The message signal can be more diversified, from audio signals to analog video signals. The team also came up with an idea about simulating a Slow-Scan Television (SSTV) which is widely used in satellite communication. However, due to the time limitation of the project, those ideas failed to be implemented.
+
 \end{document}

@@ -3,62 +3,21 @@
 \chapter{Methodology}
 This chapter presents the methodology and the relevant theories employed in the project. The simulations were executed within the Jupyter Notebook environment, leveraging essential packages for numerical computation, signal analysis, and plotting, namely \verb|numpy|, \verb|scipy|, and \verb|matplotlib|.
 
-\section{The Message Signals}
-\subsection{The Choices of Message Signals}
-Two distinct message signals were selected for thorough investigation in this project:
-\begin{enumerate}
-    \item The multi-tone sinusoidal signal $\sum_{i=1}^n m (t) = A_i\cos(2\pi f_i t + \phi_i)$.
-    \item The TTS-generated recording of a male voice reading ``ECE 459 is so interesting.''
-\end{enumerate}
-
-The first signal, a multi-tone sinusoidal waveform, was chosen for its simplicity as a periodic function and its unique attributes as a linear combination of two sinusoidal functions. This particular choice facilitates the observation of distortion induced by noise, given the relatively straightforward frequency spectra of sinusoidal functions.
-
-The utilization of a TTS-generated male voice recording, on the other hand, introduces a more realistic scenario, allowing the team to experiment with the designed communication system in a practical context. Such recording has no background noise between words, which enables the team to better observe the distortion by the simulated noise process. The signal is plotted as Figure \ref{fig:audio-time}.
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.7\linewidth]{plots/audio_time.png}
-    \caption{The waveform of the TTS-generated recording.}
-    \label{fig:audio-time}
-\end{figure}
-
-\subsection{Bandwidth of Signals}
-It is of significance to measure the bandwidth of message signals. The bandwidth can be determined by analytical calculations or by visually analyzing the spectrums.
-
-As is stated in \cite[Sec. 7.2.3]{kudekiAnalogSignalsSystems2009} and illustrated in Figure \ref{fig:bw}, the bandwidth of a band-limited signal, $B_T$, is the minimum frequency component that the signal has almost zero magnitude at any $f>B_W$, which means
+\section{Determination of Signal Bandwidth}
+It is of significance to measure the bandwidth of message signals. As is stated in \cite[Sec. 7.2.3]{kudekiAnalogSignalsSystems2009} and illustrated in Figure \ref{fig:bw}, the bandwidth $B_W$ of a band-limited signal is the minimum frequency component that the signal has almost zero magnitude at any $f>B_W$, which means
 \begin{equation}\label{eq:bw-def}
     S\left( f \right) =
     \begin{cases}
-        \napprox 0, & \text{for} \left| f \right|=B_T      \\
-        \approx 0,  & \text{for any }\left| f \right| >B_T \\
+        \napprox 0, & \text{for} \left| f \right|=B_W      \\
+        \approx 0,  & \text{for any }\left| f \right| >B_W \\
     \end{cases}.
 \end{equation}
-
+In the experiment, the bandwidth of a band-limited signal can be determined by visually observing the spectrum or by calculating the maximum frequency with non-zero frequency response.
 \begin{figure}[tb]
     \centering
     \includegraphics[scale=.5]{plots/bw.pdf}
     \caption{The bandwidth of the signal is $B_W$.}
     \label{fig:bw}
-\end{figure}
-
-Consider the multi-tone sinusoidal signal $\gamma \left(t\right) = A_i\cos\left(2\pi f_i t + \phi_i\right)$. Its Fourier Transform is
-\begin{equation}
-    \Gamma \left(f\right) = \sum_{i=1}^{n} \frac{jA_i}{2}\left\lbrace \delta\left[ 2\pi \left(f + f_i \right)\right] - \delta\left[ 2\pi \left(f - f_i \right)\right]\right\rbrace
-\end{equation}
-Hence the spectrum of $\gamma\left(t\right)$ should be similar to Figure \ref{fig:multi-tone-spectrum}. It is apparent that by Equation \eqref{eq:bw-def}, the bandwidth is $B_T = f_m$.
-\begin{figure}[tb]
-    \centering
-    \includegraphics[scale=.35]{plots/multi-tone_spectrum.pdf}
-    \caption{The spectrum of a multi-tone signal $\gamma\left(t\right)$. $B_T$ is the bandwidth of the signal.}
-    \label{fig:multi-tone-spectrum}
-\end{figure}
-
-The bandwidth of the TTS-generated recording can be determined by its spectrum. Note that the recording is generated using the male's voice, which typically ranges from \SI{80}{Hz} to \SI{200}{\Hz}. The spectrum of the recording is plotted as Figure \ref{fig:audio-spectrum}, where it is observed that the majority of power is concentrated within \SI{1}{kHz}. This is an important guidance for determining the cut-off frequency of the LPFs we used in the project. In the following simulation, \SI{5}{kHz} will be regarded as the bandwidth of the male voice recording to preserve the audio quality.
-\begin{figure}[tb]
-    \centering
-    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum.png}
-    \includegraphics[width=0.49\linewidth]{plots/audio_spectrum_2khz.png}
-    \caption{The spectrum of the audio recording. (a) The total spectrum. (b) The spectrum within \SI{2}{kHz}.}
-    \label{fig:audio-spectrum}
 \end{figure}
 
 \section{Additive White Gaussian Noise}
@@ -85,8 +44,8 @@ The power spectrum of a Python-generated white Gaussian noise process is shown i
 In this project, the AWGN process will be simulated using \verb|numpy.random.normal()| function. Figure \ref{fig:gaussian-noise} shows a Python-generated Gaussian noise process and its frequency spectrum.
 \begin{figure}[tb]
         \centering
-        \includegraphics[width=0.7\linewidth]{plots/gaussian_noise.png}
-        \includegraphics[width=0.7\linewidth]{plots/gaussian_noise_spectrum.png}
+        \includegraphics[width=0.6\linewidth]{plots/gaussian_noise.png}
+        \includegraphics[width=0.6\linewidth]{plots/gaussian_noise_spectrum.png}
         \caption{The Python-generated Gaussian process $\mathrm{N}\left[\mu = 0, \sigma^2 = 1\right]$ and its spectrum.}
         \label{fig:gaussian-noise}
 \end{figure}
@@ -155,7 +114,7 @@ The charging and discharging process is visualized in Figure \ref{fig:rc-ripple}
 \begin{figure}[tb]
     \centering
     \includegraphics[width=0.7\linewidth]{plots/envelope_ripple.png}
-    \caption{Ripple and peak clipping effects \cite[Fig. 9.3]{lesurfEnvelopeDetector}. (a)}
+    \caption{Ripple and peak clipping effects \cite[Fig. 9.3]{lesurfEnvelopeDetector}.}
     \label{fig:rc-ripple}
 \end{figure}
 
@@ -176,6 +135,7 @@ Following the notation in Figure \ref{fig:env-demod}, the actual pre-detection S
 \begin{equation}
     \SNR_{\text{pre, measured}}^{\text{AM}} = \frac{\E[x^2(t)]}{\text{filter noise power}}.
 \end{equation}
+The ``filter noise power'' is measured by sending the white noise to the demodulator without any modulated signal and computing its power.
 
 The textbook \cite[Eq. (9.23)]{haykinIntroductionAnalogDigital2007} states that the theoretical post-detection SNR in an envelope modulation receiver is expressed as
 \begin{equation}
@@ -185,11 +145,16 @@ which is a valid approximation only for high SNR and $0<k_a<100\%$.
 
 The actual post-detection SNR can be expressed as, if following the notation in Figure \ref{fig:env-demod},
 \begin{equation}
-    \SNR_{\text{post, measured}}^{\text{AM}} = \frac{\E[r^2(t)]}{\E\left[ \left[ r\left(t\right) - m\left(t\right) \right]^2 \right]}.
+    \SNR_{\text{post, measured}}^{\text{AM}} = \frac{\E\left[r^2(t)\right]}{\text{filter noise power}}.
 \end{equation}
 
-%todo：考虑是否要找一下在高pre-detection SNR和低pre-detection SNR的情况下post-detection分别是什么关系，
-%todo：书上有图9.12
+Theoretically, according to the calculation in \cite[Sec. 9.7]{haykinIntroductionAnalogDigital2007}, the pre- and post-detection SNR should have a relation similar to Figure \ref{fig:am-snr-theo}.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/am_snr.jpg}
+    \caption{The relation between AM pre- and post-detection SNRs \cite[Fig. 9.12]{haykinIntroductionAnalogDigital2007}.}
+    \label{fig:am-snr-theo}
+\end{figure}
 
 \section{FM Simulation}
 \subsection{Narrow-Band FM Modulation}
@@ -219,15 +184,12 @@ where $f_{m,\mathrm{max}}$ is the highest modulating frequency. The ratio of $\D
 In this project, the modulation index is specified as $\beta=0.3$.
 
 Such modulation can be done using a direct method \cite[Sec. 4.7]{haykinIntroductionAnalogDigital2007}, where the frequency modulator contains an oscillator directly controllable by the message signal. Figure \ref{fig:fm-mod} illustrates this process: the message signal is taken integral and sent to the controllable oscillator to produce a phase-variant signal, which is the modulated wave.
-
-
 \begin{figure}[tb]
     \centering
     \includegraphics[scale=0.6]{plots/fm_mod.pdf}
     \caption{The direct method of narrow-band FM modulation.}
     \label{fig:fm-mod}
 \end{figure}
-
 
 \subsection{Narrow-Band FM Demodulation}
 The key to FM demodulation is to extract the phase of the received signal. Considering an ideal channel, the received signal should equal the modulated signal $s(t)$ in Eq. \eqref{eq:fm_modulated}. Taking the derivative of $s(t)$ yields
@@ -259,8 +221,17 @@ where $P$ is the power of the message signal, $B_T$ is the noise bandwidth of th
 The actual SNRs can be calculated by measuring the power of the signal and noise, which can be concluded as
 \begin{align}
     \SNR_{\text{pre, measured}}^{\text{FM}} &= \frac{\E\left[x^2\left(t\right)\right]}{\text{filter noise power}}\\
-    \SNR_{\text{post, measured}}^{\text{FM}} &= \frac{\E[r^2(t)]}{\E\left[ \left[ r\left(t\right) - m\left(t\right) \right]^2 \right]}.
+    \SNR_{\text{post, measured}}^{\text{FM}} &= \frac{\E[r^2(t)]}{\text{filter noise power}}.
 \end{align}
+
+Theoretically, according to the calculation in \cite[Sec. 9.8]{haykinIntroductionAnalogDigital2007}, the pre- and post-detection SNR should have a relation similar to Figure \ref{fig:fm-snr-theo} where the pre-detection SNR is linear with post-detection SNR for high pre-detection SNR.
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=0.5\linewidth]{plots/fm_snr.jpg}
+    \caption{The relation between FM pre- and post-detection SNRs \cite[Fig. 9.17]{haykinIntroductionAnalogDigital2007}.}
+    \label{fig:fm-snr-theo}
+\end{figure}
+
 
 \section{Filter Design}
 \subsection{Ideal Filters}
@@ -308,15 +279,27 @@ The response of the filter is uniquely determined by coefficients $a_i$ and $b_j
 \end{figure}
 \begin{figure}[tb]
     \centering
-    \includegraphics[scale=.6]{plots/butterworth-lpf-nolog.pdf}
+    \includegraphics[scale=.8]{plots/butterworth-lpf-nolog.pdf}
     \caption{The frequency response of a Butterworth LPF with cut-off frequency $\omega_c = \SI{100}{\radian\per\s}$.}
     \label{fig:butter-lpf}
 \end{figure}
 \begin{figure}[tb]
     \centering
-    \includegraphics[scale=.6]{plots/butterworth-bpf-nolog.pdf}
+    \includegraphics[scale=.8]{plots/butterworth-bpf-nolog.pdf}
     \caption{The frequency response of a Butterworth BPF with pass-band from \SI{100}{Hz} to \SI{200}{Hz}.}
     \label{fig:butter-bpf}
 \end{figure}
+
+\subsection{Nyquist Sampling Theorem}
+
+The sampling frequency is of significance in the design of the Butterworth filter. As stated in \cite[pp. 296--297]{manolakisAppliedDigitalSignal2011}, the sampling frequency $f_s$ should satisfy
+\begin{equation}
+    f_s \geq 2B_W
+\end{equation}
+where $B_W$ is the bandwidth of the signal to sample. Hence in filter design, the frequency parameters should also follow the sampling theorem,
+\begin{align}
+    f_{cut, LPF} &\leq \frac{f_s}{2} \\
+    f_{lower, BPF}&< f_{upper, BPF}\leq \frac{f_s}{2}.
+\end{align}
 
 \end{document}
