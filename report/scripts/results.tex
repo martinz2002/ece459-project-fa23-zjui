@@ -61,7 +61,13 @@ The noise is then added to the signal and produces a noisy FM signal. The signal
 
 At the receiver side, a BPF is applied to the signal to suppress noise. The spectrum of the filtered signal is shown in Figure \ref{fig:noisy-am-filtered}. Then the envelope detector is applied to the signal, which produces the demodulated signal shown in Figure \ref{fig:am-demodulated}.
 
-The pre-detection SNR is \SI{46.99}{dB}, and the post-detection SNR is \SI{119.96}{dB}. The relation between pre- and post-detection SNRs is shown in Figure \ref{fig:am-snr-relation}. They are almost linear with each other, which matches the theoretical computation in \cite[Sec. 9.7]{haykinIntroductionAnalogDigital2007}
+The SNRs are calculated to be:
+\begin{itemize}
+    \item Pre-Detection SNR: \SI{46.99}{dB}.
+    \item Post-Detection SNR: \SI{119.96}{dB}.
+\end{itemize}
+
+The team also tried different pre- and post-detection SNRs. The visual diagram of the relation between pre- and post-detection SNRs is shown in Figure \ref{fig:am-snr-relation}. They are almost linear with each other, which matches the theoretical computation in \cite[Sec. 9.7]{haykinIntroductionAnalogDigital2007}
 
 \begin{figure}[b]
     \centering

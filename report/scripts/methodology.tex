@@ -245,7 +245,7 @@ The expressions for ideal LPF and BPF in the frequency domain are
 By inverse Fourier transformation, their time-domain impulse response can be obtained as
 \begin{align}
     h_{LPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right) \\
-    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t} + 2f_{cut}\sinc\left(+2f_{cut} t\right)\e^{-j2\pi f_{cut} t}
+    h_{BPF}\left(t\right) &= 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{j2\pi f_{cut} t} + 2f_{cut}\sinc\left(2f_{cut} t\right)\e^{-j2\pi f_{cut} t}
 \end{align}
 which contains non-periodic and infinitely expanding $\sinc$ terms. This indicates the impulse response to be associated with the future input, which violates the causality. Thus the ideal LPF and BPF are not causal and are not physically implementable.
 
@@ -271,7 +271,7 @@ In the digital realm, Python facilitates the implementation of filters as digita
 
 The response of the filter is uniquely determined by coefficients $a_i$ and $b_j$ ($0 \leq i, j \leq n$), where these coefficients can be computed using the \verb|scipy.signal.butter()| function, as documented by \cite{thescipycommunityScipySignalButter, thescipycommunityScipySignalFiltfilt, thescipycommunityScipySignalLfilter}.
 
-\begin{figure}[tb]
+\begin{figure}[b]
     \centering
     \includegraphics[scale=.5]{plots/1order_butterLPF.png}
     \caption{A first-order Butterworth LPF circuit \cite{ButterworthFilterWhat2021}.}
@@ -291,7 +291,6 @@ The response of the filter is uniquely determined by coefficients $a_i$ and $b_j
 \end{figure}
 
 \subsection{Nyquist Sampling Theorem}
-
 The sampling frequency is of significance in the design of the Butterworth filter. As stated in \cite[pp. 296--297]{manolakisAppliedDigitalSignal2011}, the sampling frequency $f_s$ should satisfy
 \begin{equation}
     f_s \geq 2B_W
